@@ -1,0 +1,11 @@
+[submodule "src/libs/ros2_robotiq_gripper"]
+	path = src/libs/ros2_robotiq_gripper
+	url = git@github.com:zitongbai/ros2_robotiq_gripper.git
+[submodule "src/libs/serial"]
+	path = src/libs/serial
+	url = git@github.com:tylerjw/serial.git
+	branch = ros2
+[submodule "src/libs/gazebo-pkgs"]
+	path = src/libs/gazebo-pkgs
+	url = git@github.com:zitongbai/gazebo-pkgs.git
+	branch = humble
