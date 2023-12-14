@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ur_robotiq_rs">
+
+    <link name="world"/>
+
+    <xacro:include filename="$(find ur_robotiq_rs_description)/urdf/ur_robotiq_rs_macro.urdf.xacro"/>
+
+    <xacro:ur_robotiq_rs name="ur" tf_prefix="" parent="world">
+        <xacro:arg name="ur_type" default="ur5e"/>
+        <xacro:arg name="initial_positions_file" default="$(find ur_robotiq_rs_description)/config/initial_positions.yaml"/>
+        <origin xyz="0 0.5 1.03" rpy="0 0 0" />
+    </xacro:ur_robotiq_rs>
+
+
+</robot>
