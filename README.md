@@ -1,6 +1,8 @@
 # ur_project_ros2
 The application of ur robots, robotiq gripper, realsense camera, etc. 
 
+To find more infomation (installation, usage), visit [wiki](https://github.com/zitongbai/ur_project_ros2/wiki)
+
 # Structure
 
 
