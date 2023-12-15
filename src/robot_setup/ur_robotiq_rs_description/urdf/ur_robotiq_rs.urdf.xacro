@@ -1,15 +1,41 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ur_robotiq_rs">
 
-    <link name="world"/>
+    <!-- parameters -->
+    <xacro:arg name="tf_prefix" default=""/>
+    <xacro:arg name="ur_type" default="ur5e"/>
+    <xacro:arg name="sim_gazebo" default="true" />
+    <xacro:arg name="simulation_controllers" default="$(find ur_robotiq_rs_description)/config/controllers.yaml" />
+    <xacro:arg name="initial_positions_file" default="$(find ur_robotiq_rs_description)/config/initial_positions.yaml"/>
 
+    <!-- import main macro -->
     <xacro:include filename="$(find ur_robotiq_rs_description)/urdf/ur_robotiq_rs_macro.urdf.xacro"/>
 
-    <xacro:ur_robotiq_rs name="ur" tf_prefix="" parent="world">
-        <xacro:arg name="ur_type" default="ur5e"/>
-        <xacro:arg name="initial_positions_file" default="$(find ur_robotiq_rs_description)/config/initial_positions.yaml"/>
+    <link name="world"/>
+
+    <!-- robot: ur_robotiq_rs -->
+    <xacro:ur_robotiq_rs 
+        ur_name="ur"
+        ur_type="$(arg ur_type)" 
+        tf_prefix="$(arg tf_prefix)" 
+        parent="world"
+        sim_gazebo="$(arg sim_gazebo)"
+        initial_positions="$(arg initial_positions_file)"
+        simulation_controllers="$(arg simulation_controllers)">
         <origin xyz="0 0.5 1.03" rpy="0 0 0" />
     </xacro:ur_robotiq_rs>
 
+    <xacro:if value="$(arg sim_gazebo)">
+        <gazebo reference="world">
+        </gazebo>
+        <xacro:if value="$(arg sim_gazebo)">
+            <!-- Gazebo plugins -->
+            <gazebo>
+                <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+                    <parameters>$(arg simulation_controllers)</parameters>
+                </plugin>
+            </gazebo>
+          </xacro:if>
+    </xacro:if>
 
 </robot>

@@ -300,7 +300,7 @@
   </link>
   <!-- base_joint fixes base_link to the environment -->
   <joint name="base_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <origin rpy="0 0 0" xyz="0 0.5 1.03"/>
     <parent link="world"/>
     <child link="base_link"/>
   </joint>
@@ -396,10 +396,44 @@
     <parent link="flange"/>
     <child link="tool0"/>
   </joint>
+  <joint name="ur_to_robotiq_joint" type="fixed">
+    <!-- The parent link must be read from the robot model it is attached to. -->
+    <parent link="tool0"/>
+    <child link="ur_to_robotiq_link"/>
+    <origin rpy="0 0 0.0" xyz="0 0 0"/>
+  </joint>
+  <link name="ur_to_robotiq_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robotiq_description/meshes/visual/2f_85/ur_to_robotiq_adapter.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robotiq_description/meshes/collision/2f_85/ur_to_robotiq_adapter.stl"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.000044" ixy="0.0" ixz="0.0" iyy="0.000027" iyz="0.0" izz="0.000027"/>
+    </inertial>
+  </link>
+  <joint name="gripper_side_joint" type="fixed">
+    <parent link="ur_to_robotiq_link"/>
+    <child link="gripper_mount_link"/>
+    <!-- <origin xyz="0 0 0.011" rpy="0 ${-pi/2} ${pi/2}"/> -->
+    <origin rpy="0 0 0" xyz="0 0 0.011"/>
+  </joint>
+  <link name="gripper_mount_link"/>
+  <gazebo reference="world">
+        </gazebo>
   <!-- Gazebo plugins -->
   <gazebo>
-    <plugin filename="libgazebo_ros2_control.so" name="ur_gazebo_ros2_control">
-      <parameters></parameters>
+    <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+      <parameters>/home/xiaobaige/ur_project_ros2/install/ur_robotiq_rs_description/share/ur_robotiq_rs_description/config/controllers.yaml</parameters>
     </plugin>
   </gazebo>
 </robot>
