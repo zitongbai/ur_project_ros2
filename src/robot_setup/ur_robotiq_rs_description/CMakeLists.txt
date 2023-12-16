@@ -18,7 +18,8 @@ install(
     rviz
     urdf
     gazebo
-    # srdf
+    srdf
+    moveit2
     # src
   DESTINATION
     share/${PROJECT_NAME}

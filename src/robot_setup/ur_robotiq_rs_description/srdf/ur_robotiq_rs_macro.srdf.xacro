@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+    <xacro:macro name="ur_robotiq_rs_srdf" params="prefix">
+
+        <!-- include macro -->
+        <xacro:include filename="$(find ur_moveit_config)/srdf/ur_macro.srdf.xacro" />
+        
+        <xacro:include filename="$(find robotiq_description)/srdf/robotiq_2f_85_macro.srdf.xacro"/>
+
+        <!-- robot arm -->
+        <xacro:ur_srdf name="ur" prefix="${prefix}" />
+        <!-- robotiq 2f 85 -->
+        <xacro:robotiq_2f_85_srdf prefix="${prefix}"/>
+
+        <!--DISABLE COLLISIONS By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+        <disable_collisions link1="${prefix}robotiq_85_base_link" link2="${prefix}ur_to_robotiq_link" reason="Adjacent"/>
+        <disable_collisions link1="${prefix}robotiq_85_left_finger_link" link2="${prefix}ur_to_robotiq_link" reason="Never"/>
+        <disable_collisions link1="${prefix}robotiq_85_left_finger_tip_link" link2="${prefix}ur_to_robotiq_link" reason="Never"/>
+        <disable_collisions link1="${prefix}robotiq_85_left_inner_knuckle_link" link2="${prefix}ur_to_robotiq_link" reason="Never"/>
+        <disable_collisions link1="${prefix}robotiq_85_left_knuckle_link" link2="${prefix}ur_to_robotiq_link" reason="Never"/>
+        <disable_collisions link1="${prefix}robotiq_85_right_finger_link" link2="${prefix}ur_to_robotiq_link" reason="Never"/>
+        <disable_collisions link1="${prefix}robotiq_85_right_finger_tip_link" link2="${prefix}ur_to_robotiq_link" reason="Never"/>
+        <disable_collisions link1="${prefix}robotiq_85_right_inner_knuckle_link" link2="${prefix}ur_to_robotiq_link" reason="Never"/>
+        <disable_collisions link1="${prefix}robotiq_85_right_knuckle_link" link2="${prefix}ur_to_robotiq_link" reason="Never"/>
+        <disable_collisions link1="${prefix}ur_to_robotiq_link" link2="${prefix}wrist_1_link" reason="Never"/>
+        <disable_collisions link1="${prefix}ur_to_robotiq_link" link2="${prefix}wrist_2_link" reason="Never"/>
+        <disable_collisions link1="${prefix}ur_to_robotiq_link" link2="${prefix}wrist_3_link" reason="Adjacent"/>
+
+    </xacro:macro>
+
+</robot>

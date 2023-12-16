@@ -6,6 +6,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from launch_ros.descriptions import ParameterValue
 
 
 def generate_launch_description():
@@ -68,7 +69,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             'use_planning',
-            default_value='false',
+            default_value='true',
             description='Start robot with Moveit2 `move_group` planning \
                          config for Pilz and OMPL.',
         )
@@ -90,7 +91,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             'start_rviz',
-            default_value='false',
+            default_value='true',
             description='Start RViz2 automatically with this launch file.',
         )
     )
@@ -170,8 +171,12 @@ def generate_launch_description():
             robot_initial_positions_file
         ]
     )
-    robot_description = {'robot_description': robot_description_content}
-
+    robot_description = {
+        'robot_description': ParameterValue(robot_description_content, value_type=str)
+        # it is the save way to wrap the xacro output
+        # ref: https://answers.ros.org/question/417369/caught-exception-in-launch-see-debug-for-traceback-unable-to-parse-the-value-of-parameter-robot_description-as-yaml/
+    }
+    
     # Nodes and Launch
     control_node = Node(
         package='controller_manager',
@@ -205,6 +210,23 @@ def generate_launch_description():
         ],
         condition=UnlessCondition(use_planning), # Do not start RViz2 if planning is used, 
                                                 # because rviz is launched inside planning launch file
+    )
+
+    planning_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            FindPackageShare(description_package),
+            '/launch',
+            '/ur_robotiq_rs_planning.launch.py'
+        ]),
+        launch_arguments={
+            'description_package':description_package,
+            'description_file': description_file,
+            'prefix': prefix,
+            'namespace': namespace,
+            'use_sim': sim_gazebo,
+            'start_rviz': start_rviz,
+        }.items(),
+        condition=IfCondition(use_planning),
     )
 
     gazebo = IncludeLaunchDescription(
@@ -283,6 +305,7 @@ def generate_launch_description():
     nodes = [
         gazebo,
         control_node,
+        planning_launch,
         spawn_entity,
         robot_state_pub_node,
         delay_joint_state_broadcaster_spawner_after_control_node,
