@@ -4,7 +4,7 @@
     <!-- parameters -->
     <xacro:arg name="tf_prefix" default=""/>
     <xacro:arg name="ur_type" default="ur5e"/>
-    <xacro:arg name="sim_gazebo" default="false" />
+    <xacro:arg name="sim_gazebo" default="true" />
     <xacro:arg name="simulation_controllers" default="$(find ur_robotiq_rs_description)/config/controllers.yaml" />
     <xacro:arg name="initial_positions_file" default="$(find ur_robotiq_rs_description)/config/initial_positions.yaml"/>
 

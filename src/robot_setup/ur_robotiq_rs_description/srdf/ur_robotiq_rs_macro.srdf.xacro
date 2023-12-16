@@ -13,6 +13,11 @@
         <!-- robotiq 2f 85 -->
         <xacro:robotiq_2f_85_srdf prefix="${prefix}"/>
 
+        <group name="ur_robotiq">
+            <group name="ur_manipulator"/>
+            <group name="robotiq_2f_85_gripper"/>
+        </group>
+
         <!--DISABLE COLLISIONS By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
         <disable_collisions link1="${prefix}robotiq_85_base_link" link2="${prefix}ur_to_robotiq_link" reason="Adjacent"/>
         <disable_collisions link1="${prefix}robotiq_85_left_finger_link" link2="${prefix}ur_to_robotiq_link" reason="Never"/>

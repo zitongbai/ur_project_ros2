@@ -8,7 +8,8 @@
       "includePath": [
         "${workspaceFolder}/**",
         "/opt/ros/humble/include/**",
-        "/usr/include/**"
+        "/usr/include/**",
+        "${workspaceFolder}/src/libs/moveit_task_constructor/core/include"
       ],
       "name": "ROS",
       "intelliSenseMode": "gcc-x64",

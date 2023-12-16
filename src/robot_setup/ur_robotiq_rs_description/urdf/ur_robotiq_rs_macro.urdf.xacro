@@ -20,6 +20,7 @@
     <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
     <xacro:include filename="$(find robotiq_description)/urdf/robotiq_2f_85_macro.urdf.xacro" />
     <xacro:include filename="$(find robotiq_description)/urdf/ur_to_robotiq_adapter.urdf.xacro" />
+    <xacro:include filename="$(find ur_robotiq_rs_description)/urdf/realsense_d435.urdf.xacro"/>
     
 
     <!-- property -->
@@ -117,6 +118,15 @@
         <origin xyz="0 0 0" rpy="0 0 0" />
     </xacro:robotiq_2f_85_gripper>
 
+    <!-- realsense camera -->
+    <!-- Use the nominal extrinsics between camera frames if the calibrated extrinsics aren't being published. e.g. running the device in simulation  -->
+    <xacro:sensor_d435 parent="${tf_prefix}tool0"
+      name="${tf_prefix}camera"
+      use_nominal_extrinsics="true" 
+      add_plug="false" 
+      use_mesh="true">
+      <origin xyz="0 -0.1 0" rpy="0 -1.5707 1.5707"/>
+    </xacro:sensor_d435>
 
   </xacro:macro>
 </robot>
