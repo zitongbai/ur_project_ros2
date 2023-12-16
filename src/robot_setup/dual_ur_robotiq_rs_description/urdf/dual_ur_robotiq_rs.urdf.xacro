@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="dual_ur_robotiq_rs">
+
+    <!-- parameters -->
+    <xacro:arg name="ur_type" default="ur5e"/>
+    <xacro:arg name="sim_gazebo" default="true" />
+    <xacro:arg name="simulation_controllers" default="$(find dual_ur_robotiq_rs_description)/config/controllers.yaml" />
+    <xacro:arg name="left_initial_positions_file" default="$(find dual_ur_robotiq_rs_description)/config/left_initial_positions.yaml"/>
+    <xacro:arg name="right_initial_positions_file" default="$(find dual_ur_robotiq_rs_description)/config/right_initial_positions.yaml"/>
+
+    <!-- import main macro -->
+    <xacro:include filename="$(find ur_robotiq_rs_description)/urdf/ur_robotiq_rs_macro.urdf.xacro"/>
+
+    <link name="world"/>
+
+    <!-- left ur_robotiq_rs -->
+    <xacro:ur_robotiq_rs 
+        ur_name="left_ur"
+        ur_type="$(arg ur_type)" 
+        tf_prefix="left_" 
+        parent="world"
+        sim_gazebo="$(arg sim_gazebo)"
+        initial_positions="$(arg left_initial_positions_file)"
+        simulation_controllers="$(arg simulation_controllers)">
+        <origin xyz="0 0.5 1.03" rpy="0 0 0" />
+    </xacro:ur_robotiq_rs>
+
+    <!-- This avoids the redefinition of materials in case multple cameras are imported. -->
+    <xacro:property name="realsense_materials_defined" value="true" />
+
+    <!-- right ur_robotiq_rs -->
+    <xacro:ur_robotiq_rs 
+        ur_name="right_ur"
+        ur_type="$(arg ur_type)" 
+        tf_prefix="right_" 
+        parent="world"
+        sim_gazebo="$(arg sim_gazebo)"
+        initial_positions="$(arg right_initial_positions_file)"
+        simulation_controllers="$(arg simulation_controllers)">
+        <origin xyz="0 -0.5 1.03" rpy="0 0 0" />
+    </xacro:ur_robotiq_rs>
+
+    <xacro:if value="$(arg sim_gazebo)">
+        <gazebo reference="world">
+        </gazebo>
+        <xacro:if value="$(arg sim_gazebo)">
+            <!-- Gazebo plugins -->
+            <gazebo>
+                <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+                    <parameters>$(arg simulation_controllers)</parameters>
+                </plugin>
+            </gazebo>
+          </xacro:if>
+    </xacro:if>
+
+</robot>

@@ -166,7 +166,7 @@ aluminum peripherial evaluation case.
 
     <xacro:gazebo_d435 camera_name="${name}" 
       reference_link="${name}_link" 
-      topics_ns="plugin_name" 
+      topics_ns="{name}_d435" 
       depth_optical_frame="${name}_depth_optical_frame" 
       color_optical_frame="${name}_color_optical_frame" 
       infrared1_optical_frame="${name}_infra1_optical_frame" 

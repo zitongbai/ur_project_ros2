@@ -53,12 +53,6 @@
     <xacro:property name="tool_tx_idle_chars" value="3.5" />
     <xacro:property name="tool_device_name" value="/tmp/ttyUR" />
     <xacro:property name="tool_tcp_port" value="54321" />
-    <!-- Simulation parameters -->
-    <xacro:arg name="use_fake_hardware" default="false" />
-    <xacro:arg name="fake_sensor_commands" default="false" />
-    <xacro:arg name="sim_gazebo" default="false" />
-    <xacro:arg name="sim_ignition" default="false" />
-    <xacro:arg name="simulation_controllers" default="" />
 
 
     <!-- arm -->
@@ -110,11 +104,12 @@
       />
 
     <!-- gripper -->
-    <xacro:robotiq_2f_85_gripper name="RobotiqGripperHardwareInterface" 
+    <xacro:robotiq_2f_85_gripper name="${ur_name}gripper" 
         prefix="${tf_prefix}"
         parent="${tf_prefix}gripper_mount_link" 
-        use_fake_hardware="$(arg use_fake_hardware)"
-        sim_gazebo="$(arg sim_gazebo)">
+        use_fake_hardware="${use_fake_hardware}"
+        sim_gazebo="$(arg sim_gazebo)"
+        palm_link="${tf_prefix}wrist_3_link">
         <origin xyz="0 0 0" rpy="0 0 0" />
     </xacro:robotiq_2f_85_gripper>
 

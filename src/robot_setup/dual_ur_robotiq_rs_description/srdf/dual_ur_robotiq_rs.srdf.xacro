@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="dual_ur_robotiq_rs">
+  
+  <xacro:include filename="$(find ur_robotiq_rs_description)/srdf/ur_robotiq_rs_macro.srdf.xacro"/>
+  <xacro:ur_robotiq_rs_srdf prefix="left_"/>
+  <xacro:ur_robotiq_rs_srdf prefix="right_"/>
+  
+  <group name="both_manipulators">
+    <group name="left_ur_manipulator"/>
+    <group name="right_ur_manipulator"/>
+  </group>
+
+</robot>
