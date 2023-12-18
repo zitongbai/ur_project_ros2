@@ -10,6 +10,43 @@ find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(moveit_common REQUIRED)
+find_package(moveit_core REQUIRED)
+find_package(moveit_ros_planning_interface REQUIRED)
+find_package(moveit_ros_planning REQUIRED)
+find_package(moveit_visual_tools REQUIRED)
+find_package(rclcpp_components REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(control_msgs REQUIRED)
+find_package(ur_robotiq_rs_description REQUIRED)
+
+include_directories(
+  include
+  ${ur_robotiq_rs_description_INCLUDE_DIRS}
+)
+
+add_executable(pick_and_place src/pick_and_place.cpp)
+
+ament_target_dependencies(pick_and_place
+  rclcpp moveit_ros_planning_interface tf2 
+  moveit_core moveit_ros_planning control_msgs
+  ur_robotiq_rs_description
+)
+
+
+install(TARGETS pick_and_place
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(
+  DIRECTORY 
+    launch
+    config
+    gazebo
+  DESTINATION 
+    share/${PROJECT_NAME}
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

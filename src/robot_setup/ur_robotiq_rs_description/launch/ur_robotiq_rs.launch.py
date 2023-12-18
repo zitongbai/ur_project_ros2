@@ -14,6 +14,14 @@ def generate_launch_description():
     declared_arguments = []
     declared_arguments.append(
         DeclareLaunchArgument(
+            'runtime_config_package',
+            default_value='ur_robotiq_rs_description',
+            description='Package with the controller\'s configuration in "config" folder. \
+                         Usually the argument is not set, it enables use of a custom setup.',
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
             'controllers_file',
             default_value='controllers.yaml',
             description='YAML file with the controllers configuration.',
@@ -32,6 +40,13 @@ def generate_launch_description():
             'description_file',
             default_value='ur_robotiq_rs.urdf.xacro',
             description='URDF/XACRO description file with the robot.',
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'gazebo_world_file',
+            default_value='empty.world',
+            description='gazebo world file with the robot',
         )
     )
     declared_arguments.append(
@@ -118,19 +133,20 @@ def generate_launch_description():
     )
 
     # Initialize Arguments
+    runtime_config_package = LaunchConfiguration('runtime_config_package')
     controllers_file = LaunchConfiguration('controllers_file')
     description_package = LaunchConfiguration('description_package')
     description_file = LaunchConfiguration('description_file')
+    gazebo_world_file = LaunchConfiguration('gazebo_world_file')
     prefix = LaunchConfiguration('prefix')
     namespace = LaunchConfiguration('namespace')
     sim_gazebo = LaunchConfiguration('sim_gazebo')
-    use_fake_hardware = LaunchConfiguration('use_fake_hardware')
     use_planning = LaunchConfiguration('use_planning')
     arm_controller = LaunchConfiguration('arm_controller')
     gripper_controller = LaunchConfiguration('gripper_controller')
     start_rviz = LaunchConfiguration('start_rviz')
     initial_positions_file = LaunchConfiguration('initial_positions_file')
-    command_interface = LaunchConfiguration('command_interface')
+    base_frame_file = LaunchConfiguration('base_frame_file')
 
     # File path
     robot_controllers_file = PathJoinSubstitution(
@@ -143,7 +159,10 @@ def generate_launch_description():
         [FindPackageShare(description_package), 'rviz', 'ur_robotiq_rs.rviz']
     )
     gazebo_world_file = PathJoinSubstitution(
-        [FindPackageShare(description_package), 'gazebo', 'empty.world']
+        [FindPackageShare(runtime_config_package), 'gazebo', gazebo_world_file]
+    )
+    base_frame_file = PathJoinSubstitution(
+        [FindPackageShare(runtime_config_package), 'config', base_frame_file]
     )
 
     # Get URDF/XACRO file path
@@ -168,7 +187,10 @@ def generate_launch_description():
             robot_controllers_file,
             ' ',
             'initial_positions_file:=',
-            robot_initial_positions_file
+            robot_initial_positions_file,
+            ' ',
+            'base_frame_file:=',
+            base_frame_file,
         ]
     )
     robot_description = {
@@ -236,7 +258,7 @@ def generate_launch_description():
                     'launch', 'gazebo.launch.py']
             )]
         ),
-        launch_arguments={'verbose': 'true', 'world': gazebo_world_file}.items(),
+        launch_arguments={'verbose': 'false', 'world': gazebo_world_file}.items(),
         condition=IfCondition(sim_gazebo),
     )
 

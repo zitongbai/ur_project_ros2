@@ -116,6 +116,13 @@ def generate_launch_description():
             description='Start RViz2 automatically with this launch file.',
         )
     )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'base_frame_file',
+            default_value='base_frame.yaml',
+            description='Configuration file of robot base frame wrt World.',
+        )
+    )
 
     # Initialize Arguments
     controllers_file = LaunchConfiguration('controllers_file')
@@ -131,6 +138,7 @@ def generate_launch_description():
     right_arm_controller = LaunchConfiguration('right_arm_controller')
     right_gripper_controller = LaunchConfiguration('right_gripper_controller')
     start_rviz = LaunchConfiguration('start_rviz')
+    base_frame_file = LaunchConfiguration('base_frame_file')
 
     # File path
     robot_controllers_file = PathJoinSubstitution(
@@ -141,6 +149,9 @@ def generate_launch_description():
     )
     gazebo_world_file = PathJoinSubstitution(
         [FindPackageShare(description_package), 'gazebo', gazebo_world_file]
+    )
+    base_frame_file = PathJoinSubstitution(
+        [FindPackageShare(description_package), 'config', base_frame_file]
     )
 
     # Get URDF/XACRO file path

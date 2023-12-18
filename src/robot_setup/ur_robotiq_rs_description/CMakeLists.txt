@@ -23,6 +23,7 @@ include_directories(include)
 
 add_library(ur_robotiq_rs_node SHARED
   src/ur_robotiq_rs_node.cpp
+  include/ur_robotiq_rs_description/ur_robotiq_rs_node.h
 )
 ament_target_dependencies(ur_robotiq_rs_node
   rclcpp moveit_ros_planning_interface tf2 
@@ -31,10 +32,19 @@ ament_target_dependencies(ur_robotiq_rs_node
 
 # install the lib
 install(TARGETS ur_robotiq_rs_node
+  EXPORT export_ur_robotiq_rs_node
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
+
+install(DIRECTORY include/
+  DESTINATION include
+)
+
+ament_export_include_directories(include)
+ament_export_libraries(ur_robotiq_rs_node)
+ament_export_targets(export_ur_robotiq_rs_node)
 
 install(
   DIRECTORY

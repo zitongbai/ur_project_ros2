@@ -39,6 +39,18 @@ public:
     void init();
 
     /**
+     * @brief 链式构造
+     */
+    UrRobotiqRsNode & set_planning_group_name(const std::string & planning_group_name){
+        PLANNING_GROUP = planning_group_name;
+        return *this;
+    }
+    UrRobotiqRsNode & set_gripper_action_name(const std::string & gripper_action_name){
+        gripper_action_name_ = gripper_action_name;
+        return *this;
+    }
+
+    /**
      * @brief Plan the path to the target pose and execute it
      * 
      * @param target_pose 
@@ -56,7 +68,7 @@ public:
 
 private:
     // moveit
-    const std::string PLANNING_GROUP = "manipulator";
+    std::string PLANNING_GROUP = "ur_manipulator";
     moveit::planning_interface::MoveGroupInterfacePtr move_group_;
     moveit::planning_interface::PlanningSceneInterface planning_scene_interface_;
     /**
@@ -70,7 +82,7 @@ private:
                                         const std::string & reference_frame);
 
     // robotiq gripper
-    const std::string gripper_action_name_ = "gripper_controller/gripper_cmd";
+    std::string gripper_action_name_ = "/robotiq_gripper_controller/gripper_cmd";
     rclcpp_action::Client<GripperCommand>::SharedPtr gripper_action_client_;
     void goal_response_callback(const GoalHandleGripperCommand::SharedPtr & goal_handle);
     void feedback_callback(GoalHandleGripperCommand::SharedPtr, const std::shared_ptr<const GripperCommand::Feedback> feedback);

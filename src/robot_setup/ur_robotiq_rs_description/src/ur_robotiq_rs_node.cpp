@@ -8,8 +8,11 @@ UrRobotiqRsNode::UrRobotiqRsNode(const std::string & node_name, const rclcpp::No
     send_goal_options_.feedback_callback = std::bind(&UrRobotiqRsNode::feedback_callback, this, std::placeholders::_1, std::placeholders::_2);
     send_goal_options_.result_callback = std::bind(&UrRobotiqRsNode::result_callback, this, std::placeholders::_1);
     // wait for action server to come up
-    while (!gripper_action_client_->wait_for_action_server(std::chrono::seconds(1))) {
-        RCLCPP_INFO(this->get_logger(), "Waiting for action server to come up...");
+    RCLCPP_INFO(this->get_logger(), "Waiting for action server");
+    gripper_action_client_->wait_for_action_server(std::chrono::seconds(10));
+    if (!gripper_action_client_->action_server_is_ready()) {
+        RCLCPP_ERROR(this->get_logger(), "Action server not available after waiting");
+        throw std::runtime_error("Action server not available");
     }
 }
 
@@ -18,46 +21,21 @@ void UrRobotiqRsNode::init(){
     move_group_ = std::make_shared<moveit::planning_interface::MoveGroupInterface>(shared_from_this(), PLANNING_GROUP);
     RCLCPP_INFO(this->get_logger(), "Reference frame: %s", move_group_->getPlanningFrame().c_str());
 
-    move_group_->setPlanningTime(5.0);
-    move_group_->setNumPlanningAttempts(5);
-    move_group_->setMaxVelocityScalingFactor(0.5);
-    move_group_->setMaxAccelerationScalingFactor(0.5);
-    move_group_->setGoalTolerance(0.01);
-    move_group_->setGoalJointTolerance(0.01);
-    move_group_->setGoalOrientationTolerance(0.01);
-    move_group_->setGoalPositionTolerance(0.01);
-    move_group_->setPlannerId("RRTConnectkConfigDefault");
-    move_group_->setWorkspace(-1.0, -1.0, -1.0, 1.0, 1.0, 1.0);
+    // move_group_->setPlanningTime(5.0);
+    // move_group_->setNumPlanningAttempts(5);
+    // move_group_->setMaxVelocityScalingFactor(0.5);
+    // move_group_->setMaxAccelerationScalingFactor(0.5);
+    // move_group_->setGoalTolerance(0.01);
+    // move_group_->setGoalJointTolerance(0.01);
+    // move_group_->setGoalOrientationTolerance(0.01);
+    // move_group_->setGoalPositionTolerance(0.01);
+    // move_group_->setPlannerId("RRTConnectkConfigDefault");
 
     // move to ready configuration
     move_group_->setStartStateToCurrentState();
     move_group_->allowReplanning(true);
     move_group_->setNamedTarget("ready");
     move_group_->move();
-
-    /* add collision objects */
-    moveit_msgs::msg::CollisionObject collision_table;
-    collision_table.header.frame_id = move_group_->getPlanningFrame(); // world
-    collision_table.id = "table";
-    // define box to add to the world
-    shape_msgs::msg::SolidPrimitive primitive;
-    primitive.type = primitive.BOX;
-    primitive.dimensions.resize(3);
-    primitive.dimensions[primitive.BOX_X] = 1.0;
-    primitive.dimensions[primitive.BOX_Y] = 1.5;
-    primitive.dimensions[primitive.BOX_Z] = 1.0;
-    geometry_msgs::msg::Pose box_pose;
-    box_pose.orientation.w = 1.0;
-    box_pose.position.x = 0.5;
-    box_pose.position.y = 0.0;
-    box_pose.position.z = 0.5;
-    collision_table.primitives.push_back(primitive);
-    collision_table.primitive_poses.push_back(box_pose);
-    collision_table.operation = collision_table.ADD;
-    std::vector<moveit_msgs::msg::CollisionObject> collision_objects;
-    collision_objects.push_back(collision_table);
-    RCLCPP_INFO(this->get_logger(), "Add an object into the world");
-    planning_scene_interface_.addCollisionObjects(collision_objects);
 
 }
 
