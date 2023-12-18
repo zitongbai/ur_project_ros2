@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ur_ft">
+
+    <!-- parameters -->
+    <xacro:arg name="tf_prefix" default=""/>
+    <xacro:arg name="ur_type" default="ur5e"/>
+    <xacro:arg name="sim_gazebo" default="true" />
+    <xacro:arg name="simulation_controllers" default="$(find ur_ft_description)/config/controllers.yaml" />
+    <xacro:arg name="initial_positions_file" default="$(find ur_ft_description)/config/initial_positions.yaml"/>
+    <xacro:arg name="base_frame_file" default="$(find ur_ft_description)/config/base_frame.yaml" />
+
+    <xacro:property name="base_frame_file" value="$(arg base_frame_file)"/>
+    <xacro:property name="base_frame" value="${xacro.load_yaml(base_frame_file)['base_frame']}"/>
+
+    <!-- import main macro -->
+    <xacro:include filename="$(find ur_ft_description)/urdf/ur_ft_macro.urdf.xacro"/>
+
+    <link name="world"/>
+
+    <!-- robot: ur_ft -->
+    <xacro:ur_ft 
+        ur_name="ur"
+        ur_type="$(arg ur_type)" 
+        tf_prefix="$(arg tf_prefix)" 
+        parent="world"
+        sim_gazebo="$(arg sim_gazebo)"
+        initial_positions="$(arg initial_positions_file)"
+        simulation_controllers="$(arg simulation_controllers)">
+        <origin xyz="${base_frame['x']} ${base_frame['y']} ${base_frame['z']}"
+            rpy="${base_frame['roll']} ${base_frame['pitch']} ${base_frame['yaw']}" />
+    </xacro:ur_ft>
+
+    <xacro:if value="$(arg sim_gazebo)">
+        <gazebo reference="world">
+        </gazebo>
+        <!-- Gazebo plugins -->
+        <gazebo>
+            <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+                <parameters>$(arg simulation_controllers)</parameters>
+            </plugin>
+        </gazebo>
+    </xacro:if>
+
+</robot>

@@ -1,0 +1,202 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+  <xacro:macro name="ur_ft" params="
+    ur_name:=ur
+    ur_type:=ur5x
+    tf_prefix
+    parent
+    *origin
+    use_fake_hardware:=false
+    fake_sensor_commands:=false
+    sim_gazebo:=false
+    sim_ignition:=false
+    headless_mode:=false
+    initial_positions
+    simulation_controllers"
+    >
+
+    <!-- import main macro -->
+    <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
+    <xacro:include filename="$(find robotiq_description)/urdf/ur_to_robotiq_adapter.urdf.xacro" />
+    
+
+    <!-- property -->
+    <xacro:property name="joint_limits_parameters_file" value="$(find ur_description)/config/${ur_type}/joint_limits.yaml"/>
+    <xacro:property name="kinematics_parameters_file" value="$(find ur_description)/config/${ur_type}/default_kinematics.yaml"/>
+    <xacro:property name="physical_parameters_file" value="$(find ur_description)/config/${ur_type}/physical_parameters.yaml"/>
+    <xacro:property name="visual_parameters_file" value="$(find ur_description)/config/${ur_type}/visual_parameters.yaml"/>
+    <xacro:property name="transmission_hw_interface" value=""/>
+    <xacro:property name="safety_limits" value="false"/>
+    <xacro:property name="safety_pos_margin" value="0.15"/>
+    <xacro:property name="safety_k_position" value="20"/>
+    <!-- ros2_control related parameters -->
+    <xacro:property name="headless_mode" value="false" />
+    <xacro:property name="robot_ip" value="0.0.0.0" />
+    <xacro:property name="script_filename" value=""/>
+    <xacro:property name="output_recipe_filename" value=""/>
+    <xacro:property name="input_recipe_filename" value=""/>
+    <xacro:property name="reverse_ip" value="0.0.0.0"/>
+    <xacro:property name="script_command_port" value="50004"/>
+    <xacro:property name="reverse_port" value="50001"/>
+    <xacro:property name="script_sender_port" value="50002"/>
+    <xacro:property name="trajectory_port" value="50003"/>
+    <!--   tool communication related parameters-->
+    <xacro:property name="use_tool_communication" value="false" />
+    <xacro:property name="tool_voltage" value="0" />
+    <xacro:property name="tool_parity" value="0" />
+    <xacro:property name="tool_baud_rate" value="115200" />
+    <xacro:property name="tool_stop_bits" value="1" />
+    <xacro:property name="tool_rx_idle_chars" value="1.5" />
+    <xacro:property name="tool_tx_idle_chars" value="3.5" />
+    <xacro:property name="tool_device_name" value="/tmp/ttyUR" />
+    <xacro:property name="tool_tcp_port" value="54321" />
+
+
+    <!-- arm -->
+    <xacro:ur_robot
+      name="${ur_name}"
+      tf_prefix="${tf_prefix}"
+      parent="${parent}" 
+      joint_limits_parameters_file="${joint_limits_parameters_file}"
+      kinematics_parameters_file="${kinematics_parameters_file}"
+      physical_parameters_file="${physical_parameters_file}"
+      visual_parameters_file="${visual_parameters_file}"
+      transmission_hw_interface="${transmission_hw_interface}"
+      safety_limits="${safety_limits}"
+      safety_pos_margin="${safety_pos_margin}"
+      safety_k_position="${safety_k_position}"
+      use_fake_hardware="${use_fake_hardware}"
+      fake_sensor_commands="${fake_sensor_commands}"
+      sim_gazebo="${sim_gazebo}"
+      sim_ignition="${sim_ignition}"
+      headless_mode="${headless_mode}"
+      initial_positions="${xacro.load_yaml(initial_positions)}"
+      use_tool_communication="${use_tool_communication}"
+      tool_voltage="${tool_voltage}"
+      tool_parity="${tool_parity}"
+      tool_baud_rate="${tool_baud_rate}"
+      tool_stop_bits="${tool_stop_bits}"
+      tool_rx_idle_chars="${tool_rx_idle_chars}"
+      tool_tx_idle_chars="${tool_tx_idle_chars}"
+      tool_device_name="${tool_device_name}"
+      tool_tcp_port="${tool_tcp_port}"
+      robot_ip="${robot_ip}"
+      script_filename="${script_filename}"
+      output_recipe_filename="${output_recipe_filename}"
+      input_recipe_filename="${input_recipe_filename}"
+      reverse_port="${reverse_port}"
+      script_sender_port="${script_sender_port}"
+      reverse_ip="${reverse_ip}"
+      script_command_port="${script_command_port}"
+      trajectory_port="${trajectory_port}"
+      >
+      <xacro:insert_block name="origin" />          <!-- position robot in the parent link -->
+    </xacro:ur_robot>
+
+    <!-- adapter -->
+    <xacro:ur_to_robotiq
+      prefix="${tf_prefix}"
+      connected_to="${tf_prefix}tool0"
+      rotation="0.0"
+      />
+    
+      <!-- <link name="link1">
+        <collision>
+          <origin xyz="0 0 0.05" rpy="0 0 0"/>
+          <geometry>
+            <box size="0.02 0.02 0.1"/>
+          </geometry>
+        </collision>
+    
+        <visual>
+          <origin xyz="0 0 0.05" rpy="0 0 0"/>
+          <geometry>
+            <box size="0.02 0.02 0.1"/>
+          </geometry>
+        </visual>
+    
+        <inertial>
+          <origin xyz="0 0 1" rpy="0 0 0"/>
+          <mass value="1"/>
+          <inertia
+            ixx="1.0" ixy="0.0" ixz="0.0"
+            iyy="1.0" iyz="0.0"
+            izz="1.0"/>
+        </inertial>
+      </link>
+      <gazebo reference="link1">
+        <material>Gazebo/Orange</material>
+      </gazebo> -->
+
+    <link name="${tf_prefix}simple_ft_sensor">
+        <visual>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <geometry>
+            <cylinder length="0.05" radius="0.01"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <cylinder length="0.05" radius="0.01"/>
+          </geometry>
+        </collision>
+        <inertial>
+          <mass value="0.01" />
+          <origin xyz="0 0 0" />
+          <inertia ixx="0.000044" ixy="0.0" ixz="0.0" iyy="0.000027" iyz="0.0" izz="0.000027" />
+        </inertial>
+    </link>
+
+    <gazebo reference="${tf_prefix}simple_ft_sensor">
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+      <material>Gazebo/Red</material>
+    </gazebo>
+
+    <joint name="${tf_prefix}temp" type="revolute">
+      <parent link="${tf_prefix}ur_to_robotiq_link"/>
+      <child link="${tf_prefix}simple_ft_sensor"/>
+      <origin rpy="0 0 -1.57" xyz="0.0 0.0 0.25"/>
+      <axis xyz="0 0 1"/>
+      <limit effort="28.0" lower="0.0" upper="1.0" velocity="3.141592653589793"/>
+      <dynamics damping="0" friction="0"/>
+    </joint>
+
+    <ros2_control name="temp_ros2_ctrl" type="system">
+      <hardware>
+        <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+      </hardware>
+      <joint name="${tf_prefix}temp">
+        <command_interface name="position" />
+        <state_interface name="position">
+            <param name="initial_value">0.0</param>
+        </state_interface>
+      </joint>
+    </ros2_control>
+
+    <!-- <transmission name="${tf_prefix}temp_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${tf_prefix}temp">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${tf_prefix}temp_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission> -->
+    
+    <!-- <xacro:if value="${sim_gazebo}">
+        <gazebo reference="${tf_prefix}wrist_3_link-ft_frame">
+          <provideFeedback>true</provideFeedback>
+        </gazebo>
+        <gazebo>
+            <plugin name="${tf_prefix}ft_sensor" filename="libgazebo_ros_ft_sensor.so">
+                <update_rate>50.0</update_rate>
+                <joint_name>${tf_prefix}wrist_3_link-ft_frame</joint_name>
+            </plugin>
+        </gazebo>
+    </xacro:if> -->
+
+  </xacro:macro>
+</robot>
