@@ -36,6 +36,13 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
+            'gazebo_world_file',
+            default_value='empty.world',
+            description='gazebo world file with the robot',
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
             'prefix',
             default_value='""',
             description='Prefix of the joint names, useful for multi-robot setup. \
@@ -114,6 +121,7 @@ def generate_launch_description():
     controllers_file = LaunchConfiguration('controllers_file')
     description_package = LaunchConfiguration('description_package')
     description_file = LaunchConfiguration('description_file')
+    gazebo_world_file = LaunchConfiguration('gazebo_world_file')
     prefix = LaunchConfiguration('prefix')
     namespace = LaunchConfiguration('namespace')
     sim_gazebo = LaunchConfiguration('sim_gazebo')
@@ -132,7 +140,7 @@ def generate_launch_description():
         [FindPackageShare(description_package), 'rviz', 'dual_ur_robotiq_rs.rviz']
     )
     gazebo_world_file = PathJoinSubstitution(
-        [FindPackageShare(description_package), 'gazebo', 'empty.world']
+        [FindPackageShare(description_package), 'gazebo', gazebo_world_file]
     )
 
     # Get URDF/XACRO file path

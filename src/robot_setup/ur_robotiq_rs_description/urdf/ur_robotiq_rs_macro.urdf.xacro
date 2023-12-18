@@ -108,8 +108,7 @@
         prefix="${tf_prefix}"
         parent="${tf_prefix}gripper_mount_link" 
         use_fake_hardware="${use_fake_hardware}"
-        sim_gazebo="$(arg sim_gazebo)"
-        palm_link="${tf_prefix}wrist_3_link">
+        sim_gazebo="$(arg sim_gazebo)">
         <origin xyz="0 0 0" rpy="0 0 0" />
     </xacro:robotiq_2f_85_gripper>
 

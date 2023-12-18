@@ -65,7 +65,7 @@
   <material name="plastic">
     <color rgba="0.1 0.1 0.1 1"/>
   </material>
-  <ros2_control name="ur" type="system">
+  <ros2_control name="left_ur" type="system">
     <hardware>
       <plugin>gazebo_ros2_control/GazeboSystem</plugin>
     </hardware>
@@ -434,7 +434,7 @@
     <origin rpy="0 0 0" xyz="0 0 0.011"/>
   </joint>
   <link name="left_gripper_mount_link"/>
-  <ros2_control name="RobotiqGripperHardwareInterface" type="system">
+  <ros2_control name="left_urgripper" type="system">
     <!-- Plugins -->
     <hardware>
       <!-- Set use_dummy to true to connect to a dummy driver for testing purposes. -->
@@ -765,7 +765,7 @@
     <plugin filename="libgazebo_grasp_fix.so" name="left_gazebo_grasp_fix">
       <arm>
         <arm_name>left_robotiq_85_gripper_arm</arm_name>
-        <palm_link>left_left_wrist_3_link</palm_link>
+        <palm_link>left_wrist_3_link</palm_link>
         <gripper_link>left_robotiq_85_left_finger_tip_link</gripper_link>
         <gripper_link>left_robotiq_85_right_finger_tip_link</gripper_link>
         <gripper_link>left_robotiq_85_left_knuckle_link</gripper_link>
@@ -799,7 +799,7 @@
       <!-- the mesh origin is at front plate in between the two infrared camera axes -->
       <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0.0043 -0.0175 0"/>
       <geometry>
-        <mesh filename="file:///home/xiaobaige/ros2_ws/install/realsense2_description/share/realsense2_description/meshes/d435.dae"/>
+        <mesh filename="file:///opt/ros/humble/share/realsense2_description/meshes/d435.dae"/>
       </geometry>
     </visual>
     <collision>
@@ -881,8 +881,8 @@
     <kd>1</kd>
     <!--<max_vel>0.01</max_vel>
       <min_depth>0</min_depth>-->
-    <sensor name="left_cameracolor" type="camera">
-      <camera name="left_camera">
+    <sensor name="d435color" type="camera">
+      <camera name="d435">
         <horizontal_fov>1.57</horizontal_fov>
         <image>
           <width>1280</width>
@@ -903,8 +903,8 @@
       <update_rate>30</update_rate>
       <visualize>1</visualize>
     </sensor>
-    <sensor name="left_cameraired1" type="camera">
-      <camera name="left_camera">
+    <sensor name="d435ired1" type="camera">
+      <camera name="d435">
         <horizontal_fov>1.57</horizontal_fov>
         <image>
           <width>1280</width>
@@ -925,8 +925,8 @@
       <update_rate>1</update_rate>
       <visualize>0</visualize>
     </sensor>
-    <sensor name="left_cameraired2" type="camera">
-      <camera name="left_camera">
+    <sensor name="d435ired2" type="camera">
+      <camera name="d435">
         <horizontal_fov>1.57</horizontal_fov>
         <image>
           <width>1280</width>
@@ -947,8 +947,8 @@
       <update_rate>1</update_rate>
       <visualize>0</visualize>
     </sensor>
-    <sensor name="left_cameradepth" type="depth">
-      <camera name="left_camera">
+    <sensor name="d435depth" type="depth">
+      <camera name="d435">
         <horizontal_fov>1.57</horizontal_fov>
         <image>
           <width>1280</width>
@@ -970,19 +970,19 @@
     </sensor>
   </gazebo>
   <gazebo>
-    <plugin filename="librealsense_gazebo_plugin.so" name="{name}_d435">
-      <prefix>left_camera</prefix>
+    <plugin filename="librealsense_gazebo_plugin.so" name="left_camera">
+      <prefix>d435</prefix>
       <depthUpdateRate>30.0</depthUpdateRate>
       <colorUpdateRate>30.0</colorUpdateRate>
       <infraredUpdateRate>1.0</infraredUpdateRate>
-      <depthTopicName>depth/image_raw</depthTopicName>
-      <depthCameraInfoTopicName>depth/camera_info</depthCameraInfoTopicName>
-      <colorTopicName>color/image_raw</colorTopicName>
-      <colorCameraInfoTopicName>color/camera_info</colorCameraInfoTopicName>
-      <infrared1TopicName>infra1/image_raw</infrared1TopicName>
-      <infrared1CameraInfoTopicName>infra1/camera_info</infrared1CameraInfoTopicName>
-      <infrared2TopicName>infra2/image_raw</infrared2TopicName>
-      <infrared2CameraInfoTopicName>infra2/camera_info</infrared2CameraInfoTopicName>
+      <depthTopicName>left_camera/d435/depth/image_raw</depthTopicName>
+      <depthCameraInfoTopicName>left_camera/d435/depth/camera_info</depthCameraInfoTopicName>
+      <colorTopicName>left_camera/d435/color/image_raw</colorTopicName>
+      <colorCameraInfoTopicName>left_camera/d435/color/camera_info</colorCameraInfoTopicName>
+      <infrared1TopicName>left_camera/d435/infra1/image_raw</infrared1TopicName>
+      <infrared1CameraInfoTopicName>left_camera/d435/infra1/camera_info</infrared1CameraInfoTopicName>
+      <infrared2TopicName>left_camera/d435/infra2/image_raw</infrared2TopicName>
+      <infrared2CameraInfoTopicName>left_camera/d435/infra2/camera_info</infrared2CameraInfoTopicName>
       <colorOpticalframeName>left_camera_color_optical_frame</colorOpticalframeName>
       <depthOpticalframeName>left_camera_depth_optical_frame</depthOpticalframeName>
       <infrared1OpticalframeName>left_camera_infra1_optical_frame</infrared1OpticalframeName>
@@ -990,7 +990,7 @@
       <rangeMinDepth>0.2</rangeMinDepth>
       <rangeMaxDepth>10.0</rangeMaxDepth>
       <pointCloud>true</pointCloud>
-      <pointCloudTopicName>depth/points</pointCloudTopicName>
+      <pointCloudTopicName>left_camera/d435/depth/points</pointCloudTopicName>
       <pointCloudCutoff>0.5</pointCloudCutoff>
     </plugin>
   </gazebo>
@@ -1048,7 +1048,7 @@
           package. Users CANNOT rely on this file being available, or stored in
           this location. Nor can they rely on the existence of the macro.
   -->
-  <ros2_control name="ur" type="system">
+  <ros2_control name="right_ur" type="system">
     <hardware>
       <plugin>gazebo_ros2_control/GazeboSystem</plugin>
     </hardware>
@@ -1417,7 +1417,7 @@
     <origin rpy="0 0 0" xyz="0 0 0.011"/>
   </joint>
   <link name="right_gripper_mount_link"/>
-  <ros2_control name="RobotiqGripperHardwareInterface" type="system">
+  <ros2_control name="right_urgripper" type="system">
     <!-- Plugins -->
     <hardware>
       <!-- Set use_dummy to true to connect to a dummy driver for testing purposes. -->
@@ -1748,7 +1748,7 @@
     <plugin filename="libgazebo_grasp_fix.so" name="right_gazebo_grasp_fix">
       <arm>
         <arm_name>right_robotiq_85_gripper_arm</arm_name>
-        <palm_link>right_right_wrist_3_link</palm_link>
+        <palm_link>right_wrist_3_link</palm_link>
         <gripper_link>right_robotiq_85_left_finger_tip_link</gripper_link>
         <gripper_link>right_robotiq_85_right_finger_tip_link</gripper_link>
         <gripper_link>right_robotiq_85_left_knuckle_link</gripper_link>
@@ -1782,7 +1782,7 @@
       <!-- the mesh origin is at front plate in between the two infrared camera axes -->
       <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0.0043 -0.0175 0"/>
       <geometry>
-        <mesh filename="file:///home/xiaobaige/ros2_ws/install/realsense2_description/share/realsense2_description/meshes/d435.dae"/>
+        <mesh filename="file:///opt/ros/humble/share/realsense2_description/meshes/d435.dae"/>
       </geometry>
     </visual>
     <collision>
@@ -1864,8 +1864,8 @@
     <kd>1</kd>
     <!--<max_vel>0.01</max_vel>
       <min_depth>0</min_depth>-->
-    <sensor name="right_cameracolor" type="camera">
-      <camera name="right_camera">
+    <sensor name="d435color" type="camera">
+      <camera name="d435">
         <horizontal_fov>1.57</horizontal_fov>
         <image>
           <width>1280</width>
@@ -1886,8 +1886,8 @@
       <update_rate>30</update_rate>
       <visualize>1</visualize>
     </sensor>
-    <sensor name="right_cameraired1" type="camera">
-      <camera name="right_camera">
+    <sensor name="d435ired1" type="camera">
+      <camera name="d435">
         <horizontal_fov>1.57</horizontal_fov>
         <image>
           <width>1280</width>
@@ -1908,8 +1908,8 @@
       <update_rate>1</update_rate>
       <visualize>0</visualize>
     </sensor>
-    <sensor name="right_cameraired2" type="camera">
-      <camera name="right_camera">
+    <sensor name="d435ired2" type="camera">
+      <camera name="d435">
         <horizontal_fov>1.57</horizontal_fov>
         <image>
           <width>1280</width>
@@ -1930,8 +1930,8 @@
       <update_rate>1</update_rate>
       <visualize>0</visualize>
     </sensor>
-    <sensor name="right_cameradepth" type="depth">
-      <camera name="right_camera">
+    <sensor name="d435depth" type="depth">
+      <camera name="d435">
         <horizontal_fov>1.57</horizontal_fov>
         <image>
           <width>1280</width>
@@ -1953,19 +1953,19 @@
     </sensor>
   </gazebo>
   <gazebo>
-    <plugin filename="librealsense_gazebo_plugin.so" name="{name}_d435">
-      <prefix>right_camera</prefix>
+    <plugin filename="librealsense_gazebo_plugin.so" name="right_camera">
+      <prefix>d435</prefix>
       <depthUpdateRate>30.0</depthUpdateRate>
       <colorUpdateRate>30.0</colorUpdateRate>
       <infraredUpdateRate>1.0</infraredUpdateRate>
-      <depthTopicName>depth/image_raw</depthTopicName>
-      <depthCameraInfoTopicName>depth/camera_info</depthCameraInfoTopicName>
-      <colorTopicName>color/image_raw</colorTopicName>
-      <colorCameraInfoTopicName>color/camera_info</colorCameraInfoTopicName>
-      <infrared1TopicName>infra1/image_raw</infrared1TopicName>
-      <infrared1CameraInfoTopicName>infra1/camera_info</infrared1CameraInfoTopicName>
-      <infrared2TopicName>infra2/image_raw</infrared2TopicName>
-      <infrared2CameraInfoTopicName>infra2/camera_info</infrared2CameraInfoTopicName>
+      <depthTopicName>right_camera/d435/depth/image_raw</depthTopicName>
+      <depthCameraInfoTopicName>right_camera/d435/depth/camera_info</depthCameraInfoTopicName>
+      <colorTopicName>right_camera/d435/color/image_raw</colorTopicName>
+      <colorCameraInfoTopicName>right_camera/d435/color/camera_info</colorCameraInfoTopicName>
+      <infrared1TopicName>right_camera/d435/infra1/image_raw</infrared1TopicName>
+      <infrared1CameraInfoTopicName>right_camera/d435/infra1/camera_info</infrared1CameraInfoTopicName>
+      <infrared2TopicName>right_camera/d435/infra2/image_raw</infrared2TopicName>
+      <infrared2CameraInfoTopicName>right_camera/d435/infra2/camera_info</infrared2CameraInfoTopicName>
       <colorOpticalframeName>right_camera_color_optical_frame</colorOpticalframeName>
       <depthOpticalframeName>right_camera_depth_optical_frame</depthOpticalframeName>
       <infrared1OpticalframeName>right_camera_infra1_optical_frame</infrared1OpticalframeName>
@@ -1973,7 +1973,7 @@
       <rangeMinDepth>0.2</rangeMinDepth>
       <rangeMaxDepth>10.0</rangeMaxDepth>
       <pointCloud>true</pointCloud>
-      <pointCloudTopicName>depth/points</pointCloudTopicName>
+      <pointCloudTopicName>right_camera/d435/depth/points</pointCloudTopicName>
       <pointCloudCutoff>0.5</pointCloudCutoff>
     </plugin>
   </gazebo>

@@ -122,14 +122,14 @@ This is the Gazebo URDF model for the Intel RealSense D435 camera
       	<depthUpdateRate>30.0</depthUpdateRate>
       	<colorUpdateRate>30.0</colorUpdateRate>
       	<infraredUpdateRate>1.0</infraredUpdateRate>
-      	<depthTopicName>depth/image_raw</depthTopicName>
-      	<depthCameraInfoTopicName>depth/camera_info</depthCameraInfoTopicName>
-      	<colorTopicName>color/image_raw</colorTopicName>
-      	<colorCameraInfoTopicName>color/camera_info</colorCameraInfoTopicName>
-      	<infrared1TopicName>infra1/image_raw</infrared1TopicName>
-      	<infrared1CameraInfoTopicName>infra1/camera_info</infrared1CameraInfoTopicName>
-      	<infrared2TopicName>infra2/image_raw</infrared2TopicName>
-      	<infrared2CameraInfoTopicName>infra2/camera_info</infrared2CameraInfoTopicName>
+      	<depthTopicName>${topics_ns}/${camera_name}/depth/image_raw</depthTopicName>
+      	<depthCameraInfoTopicName>${topics_ns}/${camera_name}/depth/camera_info</depthCameraInfoTopicName>
+      	<colorTopicName>${topics_ns}/${camera_name}/color/image_raw</colorTopicName>
+      	<colorCameraInfoTopicName>${topics_ns}/${camera_name}/color/camera_info</colorCameraInfoTopicName>
+      	<infrared1TopicName>${topics_ns}/${camera_name}/infra1/image_raw</infrared1TopicName>
+      	<infrared1CameraInfoTopicName>${topics_ns}/${camera_name}/infra1/camera_info</infrared1CameraInfoTopicName>
+      	<infrared2TopicName>${topics_ns}/${camera_name}/infra2/image_raw</infrared2TopicName>
+      	<infrared2CameraInfoTopicName>${topics_ns}/${camera_name}/infra2/camera_info</infrared2CameraInfoTopicName>
       	<colorOpticalframeName>${color_optical_frame}</colorOpticalframeName>
       	<depthOpticalframeName>${depth_optical_frame}</depthOpticalframeName>
       	<infrared1OpticalframeName>${infrared1_optical_frame}</infrared1OpticalframeName>
@@ -137,7 +137,7 @@ This is the Gazebo URDF model for the Intel RealSense D435 camera
       	<rangeMinDepth>0.2</rangeMinDepth>
       	<rangeMaxDepth>10.0</rangeMaxDepth>
       	<pointCloud>true</pointCloud>
-      	<pointCloudTopicName>depth/points</pointCloudTopicName>
+      	<pointCloudTopicName>${topics_ns}/${camera_name}/depth/points</pointCloudTopicName>
       	<pointCloudCutoff>0.5</pointCloudCutoff>
       </plugin>
     </gazebo>
