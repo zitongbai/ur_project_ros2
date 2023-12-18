@@ -9,7 +9,32 @@ endif()
 find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(moveit_common REQUIRED)
+find_package(moveit_core REQUIRED)
+find_package(moveit_ros_planning_interface REQUIRED)
+find_package(moveit_ros_planning REQUIRED)
+find_package(moveit_visual_tools REQUIRED)
+find_package(rclcpp_components REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(control_msgs REQUIRED)
+
+include_directories(include)
+
+add_library(ur_robotiq_rs_node SHARED
+  src/ur_robotiq_rs_node.cpp
+)
+ament_target_dependencies(ur_robotiq_rs_node
+  rclcpp moveit_ros_planning_interface tf2 
+  moveit_core moveit_ros_planning control_msgs
+)
+
+# install the lib
+install(TARGETS ur_robotiq_rs_node
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
 
 install(
   DIRECTORY

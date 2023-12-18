@@ -11,9 +11,5 @@ To find more infomation (installation, usage), visit [wiki](https://github.com/z
     * `dual_ur_robotiq_rs`: dual ur_robotiq_rs
     * `vision`: vision tools to detect objects, estimate pose, etc. 
 * `tasks`:
-    * `task_1_rs_calibration`
-    * `task_2_hand_eye_calibration`
-    * `task_3_multiple_cameras`
-    * `task_4_grasp`
-    * `task_5_pick_and_place`
+    * `task_1_pick_and_place` use moveit to plan a path to the given pose, grasp the obj.
 * `libs`: third-party tools, plugins, etc. 

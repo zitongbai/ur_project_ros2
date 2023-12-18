@@ -98,6 +98,10 @@
         "__nullptr": "cpp",
         "*.ipp": "cpp",
         "__functional_base": "cpp",
-        "locale": "cpp"
+        "locale": "cpp",
+        "__node_handle": "cpp",
+        "hash_map": "cpp",
+        "hash_set": "cpp",
+        "valarray": "cpp"
     }
 }

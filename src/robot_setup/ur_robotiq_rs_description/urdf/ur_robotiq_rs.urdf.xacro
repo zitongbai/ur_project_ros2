@@ -7,6 +7,10 @@
     <xacro:arg name="sim_gazebo" default="true" />
     <xacro:arg name="simulation_controllers" default="$(find ur_robotiq_rs_description)/config/controllers.yaml" />
     <xacro:arg name="initial_positions_file" default="$(find ur_robotiq_rs_description)/config/initial_positions.yaml"/>
+    <xacro:arg name="base_frame_file" default="$(find ur_robotiq_rs_description)/config/base_frame.yaml" />
+
+    <xacro:property name="base_frame_file" value="$(arg base_frame_file)"/>
+    <xacro:property name="base_frame" value="${xacro.load_yaml(base_frame_file)['base_frame']}"/>
 
     <!-- import main macro -->
     <xacro:include filename="$(find ur_robotiq_rs_description)/urdf/ur_robotiq_rs_macro.urdf.xacro"/>
@@ -22,7 +26,8 @@
         sim_gazebo="$(arg sim_gazebo)"
         initial_positions="$(arg initial_positions_file)"
         simulation_controllers="$(arg simulation_controllers)">
-        <origin xyz="0 0.5 1.03" rpy="0 0 0" />
+        <origin xyz="${base_frame['x']} ${base_frame['y']} ${base_frame['z']}"
+            rpy="${base_frame['roll']} ${base_frame['pitch']} ${base_frame['yaw']}" />
     </xacro:ur_robotiq_rs>
 
     <xacro:if value="$(arg sim_gazebo)">

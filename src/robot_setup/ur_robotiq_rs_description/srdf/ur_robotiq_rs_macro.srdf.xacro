@@ -18,6 +18,15 @@
             <group name="robotiq_2f_85_gripper"/>
         </group>
 
+        <group_state name="${prefix}ready" group="${prefix}ur_manipulator">
+            <joint name="${prefix}elbow_joint" value="1.5707" />
+            <joint name="${prefix}shoulder_lift_joint" value="-1.5707" />
+            <joint name="${prefix}shoulder_pan_joint" value="0" />
+            <joint name="${prefix}wrist_1_joint" value="-1.5707" />
+            <joint name="${prefix}wrist_2_joint" value="-1.5707" />
+            <joint name="${prefix}wrist_3_joint" value="0" />
+        </group_state>
+
         <!--DISABLE COLLISIONS By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
         <disable_collisions link1="${prefix}robotiq_85_base_link" link2="${prefix}ur_to_robotiq_link" reason="Adjacent"/>
         <disable_collisions link1="${prefix}robotiq_85_left_finger_link" link2="${prefix}ur_to_robotiq_link" reason="Never"/>
