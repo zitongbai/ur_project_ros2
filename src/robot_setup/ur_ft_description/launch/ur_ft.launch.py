@@ -84,7 +84,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             'use_planning',
-            default_value='false',
+            default_value='true',
             description='Start robot with Moveit2 `move_group` planning \
                          config for Pilz and OMPL.',
         )

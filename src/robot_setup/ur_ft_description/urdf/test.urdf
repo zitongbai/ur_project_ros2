@@ -473,12 +473,10 @@
     - The X axis traces a symmetric line centered on the connector; the positive direction
         points the opposite way away from the connector.
     - The Y axis uses the right hand thumb rule according to X-Z. -->
-  <!-- gazebo only allows ft sensor in revolute joint, so we create one with upper limit and lower limit both equal 0 -->
-  <joint name="ft300_sensor_joint" type="revolute">
+  <joint name="ft300_sensor_joint" type="fixed">
     <origin rpy="0 3.141592653589793 -1.5707963267948966" xyz="0 0 0"/>
     <parent link="ft300_sensor"/>
     <child link="tip_link"/>
-    <limit effort="1000" lower="0" upper="0" velocity="6.5"/>
   </joint>
   <link name="tip_link">
     <collision>
@@ -487,7 +485,7 @@
         <cylinder length="0.06" radius="0.015"/>
       </geometry>
       <material name="tip_link_color">
-        <color rgba="0.0 0.0 0.0 1.0"/>
+        <color rgba="0.2 0.2 0.2 1.0"/>
       </material>
     </collision>
     <visual>
@@ -496,39 +494,41 @@
         <cylinder length="0.06" radius="0.015"/>
       </geometry>
       <matertial name="tip_link_color">
-        <color rgba="0.0 0.0 0.0 1.0"/>
+        <color rgba="0.2 0.2 0.6 1.0"/>
       </matertial>
     </visual>
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0.03"/>
-      <mass value="1.2"/>
-      <inertia ixx="0.0004275" ixy="0.0" ixz="0.0" iyy="0.0004275" iyz="0.0" izz="0.00013499999999999997"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.00035625" ixy="0.0" ixz="0.0" iyy="0.00035625" iyz="0.0" izz="0.0001125"/>
     </inertial>
   </link>
   <gazebo reference="ft300_sensor_joint">
+    <disableFixedJointLumping>true</disableFixedJointLumping>
     <provideFeedback>true</provideFeedback>
   </gazebo>
-  <!-- gazebo plugin for ft sensor -->
+  <!-- gazebo plugin for ft sensor 
+        This is a controller that simulates a 6 dof force and torque sensor on link or joint.
+        For joints, the wrench is reported in the joint child link frame and the
+        measure direction is child-to-parent link. (Force and Torque Feed Back Ground Truth)
+        If <body_name> is specified, the plugin acts as sensor on a link, otherwise if
+        <joint_name> is specified, it acts as a sensor on a joint -->
   <gazebo>
-    <plugin filename="libgazebo_ros_ft_sensor.so" name="ft300_sensor">
-      <update_rate>50.0</update_rate>
+    <plugin filename="libgazebo_ros_ft_sensor.so" name="gazebo_ros_ft_sensor">
+      <ros>
+        <!-- Add a namespace -->
+        <namespace>/robotiq_ft300</namespace>
+        <!-- Remap the default topic -->
+        <!-- <remapping>wrench:=wrench_demo</remapping> -->
+      </ros>
+      <!-- Joint name -->
       <joint_name>ft300_sensor_joint</joint_name>
+      <!-- Update rate in Hz, defaults to 0.0, which means as fast as possible -->
+      <update_rate>50</update_rate>
+      <!-- Standard deviation of the noise to be added to the reported wrench messages. -->
+      <gaussian_noise>0.01</gaussian_noise>
     </plugin>
   </gazebo>
-  <!-- we add the fake revolute joint to the ros2 control -->
-  <!-- so that its joint_state can be broadcast to ROS2 topic -->
-  <ros2_control name="ft_fake_joint_ros2_ctrl" type="system">
-    <hardware>
-      <plugin>gazebo_ros2_control/GazeboSystem</plugin>
-    </hardware>
-    <!-- joint interfaces -->
-    <joint name="ft300_sensor_joint">
-      <command_interface name="position"/>
-      <state_interface name="position">
-        <param name="initial_value">0.0</param>
-      </state_interface>
-    </joint>
-  </ros2_control>
   <gazebo reference="world">
         </gazebo>
   <!-- Gazebo plugins -->

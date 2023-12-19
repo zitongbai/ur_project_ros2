@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="ur_ft">
+
+  <xacro:arg name="prefix" default="" />
+  
+  <xacro:include filename="$(find ur_ft_description)/srdf/ur_ft_macro.srdf.xacro"/>
+  <xacro:ur_ft_srdf prefix="$(arg prefix)"/>
+  
+</robot>

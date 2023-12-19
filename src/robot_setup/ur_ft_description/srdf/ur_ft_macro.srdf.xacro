@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+    <xacro:macro name="ur_ft_srdf" params="prefix">
+
+        <!-- include macro -->
+        <xacro:include filename="$(find ur_moveit_config)/srdf/ur_macro.srdf.xacro" />
+
+        <!-- robot arm -->
+        <xacro:ur_srdf name="ur" prefix="${prefix}" />
+
+        <group_state name="${prefix}ready" group="${prefix}ur_manipulator">
+            <joint name="${prefix}elbow_joint" value="1.5707" />
+            <joint name="${prefix}shoulder_lift_joint" value="-1.5707" />
+            <joint name="${prefix}shoulder_pan_joint" value="0" />
+            <joint name="${prefix}wrist_1_joint" value="-1.5707" />
+            <joint name="${prefix}wrist_2_joint" value="-1.5707" />
+            <joint name="${prefix}wrist_3_joint" value="0" />
+        </group_state>
+
+        <!--DISABLE COLLISIONS By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+        <disable_collisions link1="${prefix}wrist_3_link" link2="${prefix}ft300_mounting_plate" reason="Adjacent"/>
+        <disable_collisions link1="${prefix}ft300_mounting_plate" link2="${prefix}ft300_sensor" reason="Adjacent"/>
+        <disable_collisions link1="${prefix}ft300_sensor" link2="${prefix}tip_link" reason="Adjacent"/>
+
+    </xacro:macro>
+
+</robot>
