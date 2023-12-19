@@ -19,6 +19,7 @@
     <!-- import main macro -->
     <xacro:include filename="$(find ur_description)/urdf/ur_macro.xacro"/>
     <xacro:include filename="$(find robotiq_description)/urdf/ur_to_robotiq_adapter.urdf.xacro" />
+    <xacro:include filename="$(find robotiq_ft_sensor_description)/urdf/robotiq_ft300.urdf.xacro" />
     
 
     <!-- property -->
@@ -94,109 +95,89 @@
       <xacro:insert_block name="origin" />          <!-- position robot in the parent link -->
     </xacro:ur_robot>
 
-    <!-- adapter -->
-    <xacro:ur_to_robotiq
-      prefix="${tf_prefix}"
-      connected_to="${tf_prefix}tool0"
-      rotation="0.0"
-      />
-    
-      <!-- <link name="link1">
-        <collision>
-          <origin xyz="0 0 0.05" rpy="0 0 0"/>
-          <geometry>
-            <box size="0.02 0.02 0.1"/>
-          </geometry>
-        </collision>
-    
-        <visual>
-          <origin xyz="0 0 0.05" rpy="0 0 0"/>
-          <geometry>
-            <box size="0.02 0.02 0.1"/>
-          </geometry>
-        </visual>
-    
-        <inertial>
-          <origin xyz="0 0 1" rpy="0 0 0"/>
-          <mass value="1"/>
-          <inertia
-            ixx="1.0" ixy="0.0" ixz="0.0"
-            iyy="1.0" iyz="0.0"
-            izz="1.0"/>
-        </inertial>
-      </link>
-      <gazebo reference="link1">
-        <material>Gazebo/Orange</material>
-      </gazebo> -->
+    <xacro:robotiq_ft300 parent="${tf_prefix}tool0" prefix="${tf_prefix}" sim_gazebo="${sim_gazebo}">
+      <origin xyz="0 0 0" rpy="0 0 0"/> 
+    </xacro:robotiq_ft300>
 
-    <link name="${tf_prefix}simple_ft_sensor">
-        <visual>
-          <origin xyz="0 0 0" rpy="0 0 0" />
-          <geometry>
-            <cylinder length="0.05" radius="0.01"/>
-          </geometry>
-        </visual>
-        <collision>
-          <origin xyz="0 0 0" rpy="0 0 0"/>
-          <geometry>
-            <cylinder length="0.05" radius="0.01"/>
-          </geometry>
-        </collision>
-        <inertial>
-          <mass value="0.01" />
-          <origin xyz="0 0 0" />
-          <inertia ixx="0.000044" ixy="0.0" ixz="0.0" iyy="0.000027" iyz="0.0" izz="0.000027" />
-        </inertial>
-    </link>
-
-    <gazebo reference="${tf_prefix}simple_ft_sensor">
-      <mu1>0.2</mu1>
-      <mu2>0.2</mu2>
-      <material>Gazebo/Red</material>
-    </gazebo>
-
-    <joint name="${tf_prefix}temp" type="revolute">
-      <parent link="${tf_prefix}ur_to_robotiq_link"/>
-      <child link="${tf_prefix}simple_ft_sensor"/>
-      <origin rpy="0 0 -1.57" xyz="0.0 0.0 0.25"/>
-      <axis xyz="0 0 1"/>
-      <limit effort="28.0" lower="0.0" upper="1.0" velocity="3.141592653589793"/>
-      <dynamics damping="0" friction="0"/>
+    <!-- FORCE REFERENCE FRAME _______________________________________________________________________________
+    As specified in the documentation:
+    - The Z axis passes through the center of the depression with positive direction in the tool direction.
+    - The X axis traces a symmetric line centered on the connector; the positive direction
+        points the opposite way away from the connector.
+    - The Y axis uses the right hand thumb rule according to X-Z. -->
+    <joint name="${tf_prefix}ft300_sensor_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 ${pi} ${-pi/2}" />
+      <parent link="${tf_prefix}ft300_sensor" />
+      <child link="${tf_prefix}tip_link" />
     </joint>
 
-    <ros2_control name="temp_ros2_ctrl" type="system">
-      <hardware>
-        <plugin>gazebo_ros2_control/GazeboSystem</plugin>
-      </hardware>
-      <joint name="${tf_prefix}temp">
-        <command_interface name="position" />
-        <state_interface name="position">
-            <param name="initial_value">0.0</param>
-        </state_interface>
-      </joint>
-    </ros2_control>
+    <xacro:property name="cylinder_radius" value="0.015"/>
+    <xacro:property name="cylinder_length" value="0.06"/>
+    <xacro:property name="cylinder_mass" value="1.0"/>
+    <link name="${tf_prefix}tip_link">
+      <collision>
+        <origin xyz="0 0 ${cylinder_length/2}" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${cylinder_radius}" length="${cylinder_length}"/>
+        </geometry>
+        <material name="tip_link_color">
+          <color rgba="0.2 0.2 0.2 1.0"/>
+        </material>
+      </collision>
+      <visual>
+        <origin xyz="0 0 ${cylinder_length/2}" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${cylinder_radius}" length="${cylinder_length}"/>
+        </geometry>
+        <matertial name="tip_link_color">
+          <color rgba="0.2 0.2 0.6 1.0"/>
+        </matertial>
+      </visual>
+      <inertial>
+        <origin xyz="0 0 ${cylinder_length/2}" rpy="0 0 0"/>
+        <mass value="${cylinder_mass}"/>
+        <inertia
+          ixx="${1/12 * cylinder_mass * (3 * cylinder_radius*cylinder_radius + cylinder_length*cylinder_length)}"
+          ixy="0.0"
+          ixz="0.0"
+          iyy="${1/12 * cylinder_mass * (3 * cylinder_radius*cylinder_radius + cylinder_length*cylinder_length)}"
+          iyz="0.0"
+          izz="${1/2 * cylinder_mass * cylinder_radius*cylinder_radius}"/>      
+      </inertial>
+    </link>
 
-    <!-- <transmission name="${tf_prefix}temp_trans">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${tf_prefix}temp">
-        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-      </joint>
-      <actuator name="${tf_prefix}temp_motor">
-        <mechanicalReduction>1</mechanicalReduction>
-      </actuator>
-    </transmission> -->
-    
-    <!-- <xacro:if value="${sim_gazebo}">
-        <gazebo reference="${tf_prefix}wrist_3_link-ft_frame">
+    <xacro:if value="${sim_gazebo}">
+        <gazebo reference="${tf_prefix}ft300_sensor_joint">
+          <disableFixedJointLumping>true</disableFixedJointLumping>
           <provideFeedback>true</provideFeedback>
         </gazebo>
+        <!-- gazebo plugin for ft sensor 
+        This is a controller that simulates a 6 dof force and torque sensor on link or joint.
+        For joints, the wrench is reported in the joint child link frame and the
+        measure direction is child-to-parent link. (Force and Torque Feed Back Ground Truth)
+        If <body_name> is specified, the plugin acts as sensor on a link, otherwise if
+        <joint_name> is specified, it acts as a sensor on a joint -->
         <gazebo>
-            <plugin name="${tf_prefix}ft_sensor" filename="libgazebo_ros_ft_sensor.so">
-                <update_rate>50.0</update_rate>
-                <joint_name>${tf_prefix}wrist_3_link-ft_frame</joint_name>
+            <plugin name="${tf_prefix}gazebo_ros_ft_sensor" filename="libgazebo_ros_ft_sensor.so">
+              <ros>
+                <!-- Add a namespace -->
+                <namespace>/${tf_prefix}robotiq_ft300</namespace>
+                <!-- Remap the default topic -->
+                <!-- <remapping>wrench:=wrench_demo</remapping> -->
+              </ros>
+              <!-- Joint name -->
+              <joint_name>${tf_prefix}ft300_sensor_joint</joint_name>
+              <!-- Update rate in Hz, defaults to 0.0, which means as fast as possible -->
+              <update_rate>50</update_rate>
+              <!-- Standard deviation of the noise to be added to the reported wrench messages. -->
+              <gaussian_noise>0.01</gaussian_noise>
+        
             </plugin>
+
         </gazebo>
-    </xacro:if> -->
+
+    </xacro:if>
+
 
   </xacro:macro>
 </robot>

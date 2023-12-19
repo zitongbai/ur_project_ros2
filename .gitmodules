@@ -13,3 +13,6 @@
 	path = src/libs/realsense_gazebo_plugin
 	url = git@github.com:zitongbai/realsense_gazebo_plugin.git
 	branch = foxy-devel
+[submodule "src/libs/ros2_robotiq_ft_sensor"]
+	path = src/libs/ros2_robotiq_ft_sensor
+	url = git@github.com:zitongbai/ros2_robotiq_ft_sensor.git

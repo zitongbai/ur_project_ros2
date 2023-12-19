@@ -19,7 +19,7 @@ install(
     urdf
     gazebo
     # srdf
-    moveit2
+    # moveit2
     # src
   DESTINATION
     share/${PROJECT_NAME}
