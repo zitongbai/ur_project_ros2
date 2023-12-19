@@ -25,6 +25,14 @@ def generate_launch_description():
     declared_arguments = []
     declared_arguments.append(
         DeclareLaunchArgument(
+            'runtime_config_package',
+            default_value='ur_ft_description',
+            description='Package with the controller\'s configuration in "config" folder. \
+                         Usually the argument is not set, it enables use of a custom setup.',
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
             'description_package',
             default_value='ur_ft_description',
             description='Description package with robot URDF/xacro files. Usually the argument \
@@ -65,20 +73,44 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
+            'rviz_config_file', 
+            default_value='ur_ft.rviz',
+            description='Rviz file'
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
             'use_sim',
             default_value='false',
             description='Start robot in Gazebo simulation.',
         )
     )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'base_frame_file',
+            default_value='base_frame.yaml',
+            description='Configuration file of robot base frame wrt World.',
+        )
+    )
 
     # Initialize Arguments
+    runtime_config_package = LaunchConfiguration('runtime_config_package')
     description_package = LaunchConfiguration('description_package')
     description_file = LaunchConfiguration('description_file')
     prefix = LaunchConfiguration('prefix')
     start_rviz = LaunchConfiguration('start_rviz')
+    rviz_config_file = LaunchConfiguration('rviz_config_file')
     base_frame_file = LaunchConfiguration('base_frame_file')
     namespace = LaunchConfiguration('namespace')
     use_sim = LaunchConfiguration('use_sim')
+
+    # File path
+    rviz_config_file_path = PathJoinSubstitution(
+        [FindPackageShare(runtime_config_package), 'rviz', rviz_config_file]
+    )
+    base_frame_file_path = PathJoinSubstitution(
+        [FindPackageShare(runtime_config_package), 'config', base_frame_file]
+    )
 
     # Get URDF via xacro
     robot_description_content = Command(
@@ -95,6 +127,8 @@ def generate_launch_description():
             'tf_prefix:=',
             prefix,
             ' ',
+            'base_frame_file:=',
+            base_frame_file_path,
         ]
     )
 
@@ -194,16 +228,12 @@ def generate_launch_description():
         ],
     )
 
-    rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare(description_package), 'rviz', 'ur_ft.rviz']
-    )
-
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
         output='log',
-        arguments=['-d', rviz_config_file],
+        arguments=['-d', rviz_config_file_path],
         parameters=[
             robot_description,
             robot_description_semantic,

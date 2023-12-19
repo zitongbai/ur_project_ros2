@@ -98,6 +98,13 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
+            'rviz_config_file', 
+            default_value='ur_ft.rviz',
+            description='Rviz file'
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
             'start_rviz',
             default_value='true',
             description='Start RViz2 automatically with this launch file.',
@@ -131,6 +138,7 @@ def generate_launch_description():
     description_package = LaunchConfiguration('description_package')
     description_file = LaunchConfiguration('description_file')
     gazebo_world_file = LaunchConfiguration('gazebo_world_file')
+    rviz_config_file = LaunchConfiguration('rviz_config_file')
     prefix = LaunchConfiguration('prefix')
     namespace = LaunchConfiguration('namespace')
     sim_gazebo = LaunchConfiguration('sim_gazebo')
@@ -141,19 +149,19 @@ def generate_launch_description():
     base_frame_file = LaunchConfiguration('base_frame_file')
 
     # File path
-    robot_controllers_file = PathJoinSubstitution(
+    controllers_file_path = PathJoinSubstitution(
         [FindPackageShare(description_package), 'config', controllers_file,]
     )
-    robot_initial_positions_file = PathJoinSubstitution(
-        [FindPackageShare(description_package), 'config', initial_positions_file,]
+    initial_positions_file_path = PathJoinSubstitution(
+        [FindPackageShare(runtime_config_package), 'config', initial_positions_file,]
     )
-    rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare(description_package), 'rviz', 'ur_ft.rviz']
+    rviz_config_file_path = PathJoinSubstitution(
+        [FindPackageShare(runtime_config_package), 'rviz', rviz_config_file]
     )
-    gazebo_world_file = PathJoinSubstitution(
+    gazebo_world_file_path = PathJoinSubstitution(
         [FindPackageShare(runtime_config_package), 'gazebo', gazebo_world_file]
     )
-    base_frame_file = PathJoinSubstitution(
+    base_frame_file_path = PathJoinSubstitution(
         [FindPackageShare(runtime_config_package), 'config', base_frame_file]
     )
 
@@ -176,13 +184,13 @@ def generate_launch_description():
             sim_gazebo, 
             ' ', 
             'simulation_controllers:=',
-            robot_controllers_file,
+            controllers_file_path,
             ' ',
             'initial_positions_file:=',
-            robot_initial_positions_file,
+            initial_positions_file_path,
             ' ',
             'base_frame_file:=',
-            base_frame_file,
+            base_frame_file_path,
         ]
     )
     robot_description = {
@@ -195,7 +203,7 @@ def generate_launch_description():
     control_node = Node(
         package='controller_manager',
         executable='ros2_control_node',
-        parameters=[robot_description, robot_controllers_file],
+        parameters=[robot_description, controllers_file_path],
         output='both',
         namespace=namespace,
         condition=UnlessCondition(sim_gazebo),
@@ -217,7 +225,7 @@ def generate_launch_description():
         executable='rviz2',
         name='rviz2',
         output='log',
-        arguments=['-d', rviz_config_file],
+        arguments=['-d', rviz_config_file_path],
         parameters=[
             robot_description,
             {"use_sim_time": sim_gazebo},
@@ -233,12 +241,15 @@ def generate_launch_description():
             '/ur_ft_planning.launch.py'
         ]),
         launch_arguments={
+            'runtime_config_package': runtime_config_package,
             'description_package':description_package,
             'description_file': description_file,
             'prefix': prefix,
             'namespace': namespace,
             'use_sim': sim_gazebo,
             'start_rviz': start_rviz,
+            'rviz_config_file': rviz_config_file,
+            'base_frame_file': base_frame_file,
         }.items(),
         condition=IfCondition(use_planning),
     )
@@ -250,7 +261,7 @@ def generate_launch_description():
                     'launch', 'gazebo.launch.py']
             )]
         ),
-        launch_arguments={'verbose': 'false', 'world': gazebo_world_file}.items(),
+        launch_arguments={'verbose': 'false', 'world': gazebo_world_file_path}.items(),
         condition=IfCondition(sim_gazebo),
     )
 

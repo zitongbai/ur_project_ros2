@@ -2,7 +2,7 @@
 base_frame:
   x: 0.0
   y: 0.0
-  z: 1.0
+  z: 0.0
   roll: 0.0
   pitch: 0.0
-  yaw: -1.5707
+  yaw: 0.0
