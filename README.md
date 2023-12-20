@@ -1,3 +1,5 @@
+# THIS REPO IS STILL UNDER DEVEL AND UNSTABLE
+# 项目仍在开发中，不保证稳定性
 # ur_project_ros2
 The application of ur robots, robotiq gripper, realsense camera, etc. 
 
@@ -11,7 +13,9 @@ To find more infomation (installation, usage), visit [wiki](https://github.com/z
     * `dual_ur_robotiq_rs`: dual ur_robotiq_rs
     * `vision`: vision tools to detect objects, estimate pose, etc. 
 * `tasks`:
-    * `task_1_pick_and_place` use moveit to plan a path to the given pose, grasp the obj.
+    * `pick_and_place` use moveit to plan a path to the given pose, grasp the obj.
+    * `find_hole` use ft sensor.
+    * `dual_plan` plan and execute dual arms at the same time.
 * `libs`: third-party tools, plugins, etc. 
 
 # Temp note
