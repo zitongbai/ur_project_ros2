@@ -306,7 +306,7 @@
   </link>
   <!-- base_joint fixes base_link to the environment -->
   <joint name="left_base_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0.5 1.03"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.5 1.0"/>
     <parent link="world"/>
     <child link="left_base_link"/>
   </joint>
@@ -760,28 +760,6 @@
     <parent link="left_robotiq_85_base_link"/>
     <child link="left_dummy_child5"/>
   </joint>
-  <gazebo>
-    <!-- grasp fix plugin for gazebo classic -->
-    <plugin filename="libgazebo_grasp_fix.so" name="left_gazebo_grasp_fix">
-      <arm>
-        <arm_name>left_robotiq_85_gripper_arm</arm_name>
-        <palm_link>left_wrist_3_link</palm_link>
-        <gripper_link>left_robotiq_85_left_finger_tip_link</gripper_link>
-        <gripper_link>left_robotiq_85_right_finger_tip_link</gripper_link>
-        <gripper_link>left_robotiq_85_left_knuckle_link</gripper_link>
-        <gripper_link>left_robotiq_85_right_knuckle_link</gripper_link>
-        <gripper_link>left_robotiq_85_left_inner_knuckle_link</gripper_link>
-        <gripper_link>left_robotiq_85_right_inner_knuckle_link</gripper_link>
-      </arm>
-      <forces_angle_tolerance>150</forces_angle_tolerance>
-      <update_rate>30</update_rate>
-      <grip_count_threshold>1</grip_count_threshold>
-      <max_grip_count>2</max_grip_count>
-      <release_tolerance>0.01</release_tolerance>
-      <disable_collisions_on_attach>false</disable_collisions_on_attach>
-      <contact_topic>__default_topic__</contact_topic>
-    </plugin>
-  </gazebo>
   <!-- camera body, with origin at bottom screw mount -->
   <joint name="left_camera_joint" type="fixed">
     <origin rpy="0 -1.5707 1.5707" xyz="0 -0.1 0"/>
@@ -799,7 +777,7 @@
       <!-- the mesh origin is at front plate in between the two infrared camera axes -->
       <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0.0043 -0.0175 0"/>
       <geometry>
-        <mesh filename="file:///opt/ros/humble/share/realsense2_description/meshes/d435.dae"/>
+        <mesh filename="file:///home/xiaobaige/ros2_ws/install/realsense2_description/share/realsense2_description/meshes/d435.dae"/>
       </geometry>
     </visual>
     <collision>
@@ -1289,7 +1267,7 @@
   </link>
   <!-- base_joint fixes base_link to the environment -->
   <joint name="right_base_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0 -0.5 1.03"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.5 1.0"/>
     <parent link="world"/>
     <child link="right_base_link"/>
   </joint>
@@ -1743,28 +1721,6 @@
     <parent link="right_robotiq_85_base_link"/>
     <child link="right_dummy_child5"/>
   </joint>
-  <gazebo>
-    <!-- grasp fix plugin for gazebo classic -->
-    <plugin filename="libgazebo_grasp_fix.so" name="right_gazebo_grasp_fix">
-      <arm>
-        <arm_name>right_robotiq_85_gripper_arm</arm_name>
-        <palm_link>right_wrist_3_link</palm_link>
-        <gripper_link>right_robotiq_85_left_finger_tip_link</gripper_link>
-        <gripper_link>right_robotiq_85_right_finger_tip_link</gripper_link>
-        <gripper_link>right_robotiq_85_left_knuckle_link</gripper_link>
-        <gripper_link>right_robotiq_85_right_knuckle_link</gripper_link>
-        <gripper_link>right_robotiq_85_left_inner_knuckle_link</gripper_link>
-        <gripper_link>right_robotiq_85_right_inner_knuckle_link</gripper_link>
-      </arm>
-      <forces_angle_tolerance>150</forces_angle_tolerance>
-      <update_rate>30</update_rate>
-      <grip_count_threshold>1</grip_count_threshold>
-      <max_grip_count>2</max_grip_count>
-      <release_tolerance>0.01</release_tolerance>
-      <disable_collisions_on_attach>false</disable_collisions_on_attach>
-      <contact_topic>__default_topic__</contact_topic>
-    </plugin>
-  </gazebo>
   <!-- camera body, with origin at bottom screw mount -->
   <joint name="right_camera_joint" type="fixed">
     <origin rpy="0 -1.5707 1.5707" xyz="0 -0.1 0"/>
@@ -1782,7 +1738,7 @@
       <!-- the mesh origin is at front plate in between the two infrared camera axes -->
       <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0.0043 -0.0175 0"/>
       <geometry>
-        <mesh filename="file:///opt/ros/humble/share/realsense2_description/meshes/d435.dae"/>
+        <mesh filename="file:///home/xiaobaige/ros2_ws/install/realsense2_description/share/realsense2_description/meshes/d435.dae"/>
       </geometry>
     </visual>
     <collision>
@@ -1983,6 +1939,38 @@
   <gazebo>
     <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
       <parameters>/home/xiaobaige/ur_project_ros2/install/dual_ur_robotiq_rs_description/share/dual_ur_robotiq_rs_description/config/controllers.yaml</parameters>
+    </plugin>
+  </gazebo>
+  <gazebo>
+    <!-- grasp fix plugin for gazebo classic -->
+    <plugin filename="libgazebo_grasp_fix.so" name="gazebo_grasp_fix">
+      <arm>
+        <arm_name>left_robotiq_85_gripper_arm</arm_name>
+        <palm_link>left_wrist_3_link</palm_link>
+        <gripper_link>left_robotiq_85_left_finger_tip_link</gripper_link>
+        <gripper_link>left_robotiq_85_right_finger_tip_link</gripper_link>
+        <gripper_link>left_robotiq_85_left_knuckle_link</gripper_link>
+        <gripper_link>left_robotiq_85_right_knuckle_link</gripper_link>
+        <gripper_link>left_robotiq_85_left_inner_knuckle_link</gripper_link>
+        <gripper_link>left_robotiq_85_right_inner_knuckle_link</gripper_link>
+      </arm>
+      <arm>
+        <arm_name>right_robotiq_85_gripper_arm</arm_name>
+        <palm_link>right_wrist_3_link</palm_link>
+        <gripper_link>right_robotiq_85_left_finger_tip_link</gripper_link>
+        <gripper_link>right_robotiq_85_right_finger_tip_link</gripper_link>
+        <gripper_link>right_robotiq_85_left_knuckle_link</gripper_link>
+        <gripper_link>right_robotiq_85_right_knuckle_link</gripper_link>
+        <gripper_link>right_robotiq_85_left_inner_knuckle_link</gripper_link>
+        <gripper_link>right_robotiq_85_right_inner_knuckle_link</gripper_link>
+      </arm>
+      <forces_angle_tolerance>150</forces_angle_tolerance>
+      <update_rate>30</update_rate>
+      <grip_count_threshold>1</grip_count_threshold>
+      <max_grip_count>2</max_grip_count>
+      <release_tolerance>0.01</release_tolerance>
+      <disable_collisions_on_attach>false</disable_collisions_on_attach>
+      <contact_topic>__default_topic__</contact_topic>
     </plugin>
   </gazebo>
 </robot>

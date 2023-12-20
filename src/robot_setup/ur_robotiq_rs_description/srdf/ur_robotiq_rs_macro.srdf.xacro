@@ -13,9 +13,9 @@
         <!-- robotiq 2f 85 -->
         <xacro:robotiq_2f_85_srdf prefix="${prefix}"/>
 
-        <group name="ur_robotiq">
-            <group name="ur_manipulator"/>
-            <group name="robotiq_2f_85_gripper"/>
+        <group name="${prefix}ur_robotiq">
+            <group name="${prefix}ur_manipulator"/>
+            <group name="${prefix}robotiq_2f_85_gripper"/>
         </group>
 
         <group_state name="${prefix}ready" group="${prefix}ur_manipulator">

@@ -1,0 +1,16 @@
+# Position and orientation of the robot base wrt World
+# it will be parsed in dual_ur_robotiq_rs.urdf.xacro
+left_base_frame:
+  x: 0.0
+  y: 0.5
+  z: 1.02
+  roll: 0.0
+  pitch: 0.0
+  yaw: 0.0
+right_base_frame:
+  x: 0.0
+  y: -0.5
+  z: 1.02
+  roll: 0.0
+  pitch: 0.0
+  yaw: 0.0

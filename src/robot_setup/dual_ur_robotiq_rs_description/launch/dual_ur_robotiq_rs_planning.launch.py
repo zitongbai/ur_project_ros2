@@ -1,17 +1,3 @@
-# Copyright 2022 ICube Laboratory, University of Strasbourg
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
@@ -23,6 +9,14 @@ from launch_ros.descriptions import ParameterValue
 def generate_launch_description():
     # Declare arguments
     declared_arguments = []
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'runtime_config_package',
+            default_value='dual_ur_robotiq_rs_description',
+            description='Package with the controller\'s configuration in "config" folder. \
+                         Usually the argument is not set, it enables use of a custom setup.',
+        )
+    )
     declared_arguments.append(
         DeclareLaunchArgument(
             'description_package',
@@ -65,20 +59,43 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
+            'rviz_config_file', 
+            default_value='dual_ur_robotiq_rs.rviz',
+            description='Rviz file'
+        )
+    )
+    declared_arguments.append(
+        DeclareLaunchArgument(
             'use_sim',
             default_value='false',
             description='Start robot in Gazebo simulation.',
         )
     )
+    declared_arguments.append(
+        DeclareLaunchArgument(
+            'base_frame_file',
+            default_value='base_frame.yaml',
+            description='Configuration file of robot base frame wrt World.',
+        )
+    )
 
     # Initialize Arguments
+    runtime_config_package = LaunchConfiguration('runtime_config_package')
     description_package = LaunchConfiguration('description_package')
     description_file = LaunchConfiguration('description_file')
     prefix = LaunchConfiguration('prefix')
     start_rviz = LaunchConfiguration('start_rviz')
+    rviz_config_file = LaunchConfiguration('rviz_config_file')
     base_frame_file = LaunchConfiguration('base_frame_file')
     namespace = LaunchConfiguration('namespace')
     use_sim = LaunchConfiguration('use_sim')
+
+    rviz_config_file_path = PathJoinSubstitution(
+        [FindPackageShare(runtime_config_package), 'rviz', rviz_config_file]
+    )
+    base_frame_file_path = PathJoinSubstitution(
+        [FindPackageShare(runtime_config_package), 'config', base_frame_file]
+    )
 
     # Get URDF via xacro
     robot_description_content = Command(
@@ -91,6 +108,9 @@ def generate_launch_description():
             ' ',
             'ur_type:=',
             'ur5e',
+            ' ', 
+            'base_frame_file:=',
+            base_frame_file_path,
         ]
     )
 
@@ -121,10 +141,10 @@ def generate_launch_description():
         ]
     )
 
-    # robot_description_planning_cartesian_limits = PathJoinSubstitution([
-    #         FindPackageShare(description_package), "moveit2", "cartesian_limits.yaml",
-    #     ]
-    # )
+    robot_description_planning_cartesian_limits = PathJoinSubstitution([
+            FindPackageShare(description_package), "moveit2", "cartesian_limits.yaml",
+        ]
+    )
 
     move_group_capabilities = {
         "capabilities": """pilz_industrial_motion_planner/MoveGroupSequenceAction \
@@ -175,7 +195,7 @@ def generate_launch_description():
             robot_description,
             robot_description_semantic,
             robot_description_kinematics,
-            # robot_description_planning_cartesian_limits,
+            robot_description_planning_cartesian_limits,
             robot_description_planning_joint_limits,
             planning_pipelines_config,
             ompl_planning_config,
@@ -187,20 +207,16 @@ def generate_launch_description():
         ],
     )
 
-    rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare(description_package), 'rviz', 'dual_ur_robotiq_rs.rviz']
-    )
-
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
         output='log',
-        arguments=['-d', rviz_config_file],
+        arguments=['-d', rviz_config_file_path],
         parameters=[
             robot_description,
             robot_description_semantic,
-            # robot_description_planning_cartesian_limits,
+            robot_description_planning_cartesian_limits,
             robot_description_planning_joint_limits,
             robot_description_kinematics,
             planning_pipelines_config,

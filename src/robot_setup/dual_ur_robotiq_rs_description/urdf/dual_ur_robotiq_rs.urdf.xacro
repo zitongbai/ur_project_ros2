@@ -7,6 +7,12 @@
     <xacro:arg name="simulation_controllers" default="$(find dual_ur_robotiq_rs_description)/config/controllers.yaml" />
     <xacro:arg name="left_initial_positions_file" default="$(find dual_ur_robotiq_rs_description)/config/left_initial_positions.yaml"/>
     <xacro:arg name="right_initial_positions_file" default="$(find dual_ur_robotiq_rs_description)/config/right_initial_positions.yaml"/>
+    <xacro:arg name="base_frame_file" default="$(find dual_ur_robotiq_rs_description)/config/base_frame.yaml" />
+
+    <xacro:property name="base_frame_file" value="$(arg base_frame_file)"/>
+    <xacro:property name="left_base_frame" value="${xacro.load_yaml(base_frame_file)['left_base_frame']}"/>
+    <xacro:property name="right_base_frame" value="${xacro.load_yaml(base_frame_file)['right_base_frame']}"/>
+
 
     <!-- import main macro -->
     <xacro:include filename="$(find ur_robotiq_rs_description)/urdf/ur_robotiq_rs_macro.urdf.xacro"/>
@@ -22,7 +28,8 @@
         sim_gazebo="$(arg sim_gazebo)"
         initial_positions="$(arg left_initial_positions_file)"
         simulation_controllers="$(arg simulation_controllers)">
-        <origin xyz="0 0.5 1.03" rpy="0 0 0" />
+        <origin xyz="${left_base_frame['x']} ${left_base_frame['y']} ${left_base_frame['z']}"
+            rpy="${left_base_frame['roll']} ${left_base_frame['pitch']} ${left_base_frame['yaw']}" />
     </xacro:ur_robotiq_rs>
 
     <!-- This avoids the redefinition of materials in case multple cameras are imported. -->
@@ -37,7 +44,8 @@
         sim_gazebo="$(arg sim_gazebo)"
         initial_positions="$(arg right_initial_positions_file)"
         simulation_controllers="$(arg simulation_controllers)">
-        <origin xyz="0 -0.5 1.03" rpy="0 0 0" />
+        <origin xyz="${right_base_frame['x']} ${right_base_frame['y']} ${right_base_frame['z']}"
+            rpy="${right_base_frame['roll']} ${right_base_frame['pitch']} ${right_base_frame['yaw']}" />
     </xacro:ur_robotiq_rs>
 
     <xacro:if value="$(arg sim_gazebo)">

@@ -112,6 +112,14 @@
         <origin xyz="0 0 0" rpy="0 0 0" />
     </xacro:robotiq_2f_85_gripper>
 
+    <!-- grasp point for planning -->
+    <link name="${tf_prefix}grasp_point"/>
+    <joint name="${tf_prefix}grasp_point_joint" type="fixed">
+      <parent link="${tf_prefix}tool0"/>
+      <child link="${tf_prefix}grasp_point"/>
+      <origin xyz="0 0 0.15" rpy="0 0 0"/>
+    </joint>
+
     <!-- realsense camera -->
     <!-- Use the nominal extrinsics between camera frames if the calibrated extrinsics aren't being published. e.g. running the device in simulation  -->
     <xacro:sensor_d435 parent="${tf_prefix}tool0"

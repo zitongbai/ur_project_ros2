@@ -13,3 +13,10 @@ To find more infomation (installation, usage), visit [wiki](https://github.com/z
 * `tasks`:
     * `task_1_pick_and_place` use moveit to plan a path to the given pose, grasp the obj.
 * `libs`: third-party tools, plugins, etc. 
+
+# Temp note
+
+create new task package: 
+```shell
+ros2 pkg create ${task_name} --build-type ament_cmake --node-name ${task_name} --dependencies rclcpp moveit_core moveit_ros_planning_interface moveit_common moveit_ros_planning tf2 rclcpp_action rclcpp_components control_msgs ${robot_pkg}
+```
