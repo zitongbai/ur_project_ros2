@@ -16,6 +16,7 @@ find_package(tf2 REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(control_msgs REQUIRED)
+find_package(moveit_visual_tools REQUIRED)
 find_package(dual_ur_robotiq_rs_description REQUIRED)
 
 add_executable(dual_plan src/dual_plan.cpp)
@@ -35,6 +36,7 @@ ament_target_dependencies(
   "rclcpp_components"
   "control_msgs"
   "dual_ur_robotiq_rs_description"
+  "moveit_visual_tools"
 )
 
 install(TARGETS dual_plan
