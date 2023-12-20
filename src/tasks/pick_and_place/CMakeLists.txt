@@ -21,23 +21,35 @@ find_package(rclcpp_action REQUIRED)
 find_package(control_msgs REQUIRED)
 find_package(ur_robotiq_rs_description REQUIRED)
 
-include_directories(
-  include
-  ${ur_robotiq_rs_description_INCLUDE_DIRS}
-)
+# include_directories(
+#   include
+#   ${ur_robotiq_rs_description_INCLUDE_DIRS}
+# )
+
+# add_executable(pick_and_place src/pick_and_place.cpp)
+
+# ament_target_dependencies(pick_and_place
+#   rclcpp moveit_ros_planning_interface tf2 
+#   moveit_core moveit_ros_planning control_msgs
+#   ur_robotiq_rs_description
+# )
+
+# install(TARGETS pick_and_place
+#   DESTINATION lib/${PROJECT_NAME}
+# )
 
 add_executable(pick_and_place src/pick_and_place.cpp)
-
+target_include_directories(pick_and_place PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 ament_target_dependencies(pick_and_place
-  rclcpp moveit_ros_planning_interface tf2 
+  rclcpp tf2 
   moveit_core moveit_ros_planning control_msgs
   ur_robotiq_rs_description
 )
 
-
 install(TARGETS pick_and_place
-  DESTINATION lib/${PROJECT_NAME}
-)
+  DESTINATION lib/${PROJECT_NAME})
 
 install(
   DIRECTORY 

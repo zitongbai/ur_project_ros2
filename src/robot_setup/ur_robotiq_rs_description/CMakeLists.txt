@@ -21,30 +21,33 @@ find_package(control_msgs REQUIRED)
 
 include_directories(include)
 
-add_library(ur_robotiq_rs_node SHARED
-  src/ur_robotiq_rs_node.cpp
-  include/ur_robotiq_rs_description/ur_robotiq_rs_node.h
-)
-ament_target_dependencies(ur_robotiq_rs_node
+
+add_library(ur_robotiq_rs_node src/ur_robotiq_rs_node.cpp)
+target_compile_features(ur_robotiq_rs_node PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_include_directories(ur_robotiq_rs_node PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+ament_target_dependencies(
+  ur_robotiq_rs_node
   rclcpp moveit_ros_planning_interface tf2 
   moveit_core moveit_ros_planning control_msgs
 )
 
-# install the lib
-install(TARGETS ur_robotiq_rs_node
-  EXPORT export_ur_robotiq_rs_node
+# Causes the visibility macros to use dllexport rather than dllimport,
+# which is appropriate when building the dll but not consuming it.
+target_compile_definitions(ur_robotiq_rs_node PRIVATE "TEST_CREATING_BUILDING_LIBRARY")
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+install(
+  TARGETS ur_robotiq_rs_node
+  EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
-
-install(DIRECTORY include/
-  DESTINATION include
-)
-
-ament_export_include_directories(include)
-ament_export_libraries(ur_robotiq_rs_node)
-ament_export_targets(export_ur_robotiq_rs_node)
 
 install(
   DIRECTORY
@@ -71,5 +74,15 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+ament_export_include_directories(
+  include
+)
+ament_export_libraries(
+  ur_robotiq_rs_node
+)
+ament_export_targets(
+  export_${PROJECT_NAME}
+)
 
 ament_package()
