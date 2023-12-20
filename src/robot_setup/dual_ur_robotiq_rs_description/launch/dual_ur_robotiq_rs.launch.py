@@ -289,7 +289,7 @@ def generate_launch_description():
                     'launch', 'gazebo.launch.py']
             )]
         ),
-        launch_arguments={'verbose': 'true', 'world': gazebo_world_file_path}.items(),
+        launch_arguments={'verbose': 'false', 'world': gazebo_world_file_path}.items(),
         condition=IfCondition(sim_gazebo),
     )
 

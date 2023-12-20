@@ -55,6 +55,24 @@ void DualUrRobotiqRsNode::init(){
     // right_move_group_->move();
 }
 
+bool DualUrRobotiqRsNode::go_to_ready_position(){
+    // std::vector<double> left_ready_joint = {M_PI, -M_PI_2, -M_PI_2, -M_PI_2, M_PI_2, 0.0};
+    // std::vector<double> right_ready_joint = {0.0, -M_PI_2, M_PI_2, -M_PI_2, -M_PI_2, 0.0};
+    std::vector<double> both_ready_joint = {
+        M_PI, -M_PI_2, -M_PI_2, -M_PI_2, M_PI_2, 0.0, 
+        0.0, -M_PI_2, M_PI_2, -M_PI_2, -M_PI_2, 0.0,
+    };
+    both_move_group_->setJointValueTarget(both_ready_joint);
+    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+    bool success = (both_move_group_->plan(my_plan) == moveit::core::MoveItErrorCode::SUCCESS);
+    if(success){
+        both_move_group_->execute(my_plan);
+        RCLCPP_INFO(this->get_logger(), "Go to ready position successfully");
+    } else {
+        RCLCPP_ERROR(this->get_logger(), "Go to ready position failed");
+    }
+    return success;
+}
 
 bool DualUrRobotiqRsNode::plan_and_execute(
         const geometry_msgs::msg::Pose & left_target_pose, 
@@ -106,7 +124,27 @@ bool DualUrRobotiqRsNode::plan_and_execute(
     return success;
 }
 
+bool DualUrRobotiqRsNode::plan_single_arm(
+        bool left,
+        const geometry_msgs::msg::Pose & target_pose, 
+        const std::string & reference_frame,
+        const std::string & end_effector_link, 
+        moveit::planning_interface::MoveGroupInterface::Plan & plan){
+    
+    auto move_group = left ? left_move_group_ : right_move_group_;
 
+    auto const target_pose_stamped = [&target_pose, &reference_frame]{
+        geometry_msgs::msg::PoseStamped msg;
+        msg.header.frame_id = reference_frame;
+        msg.pose = target_pose;
+        return msg;
+    }();
+    
+    move_group->setStartStateToCurrentState();
+    move_group->setJointValueTarget(target_pose_stamped, end_effector_link);
+    bool success = (move_group->plan(plan) == moveit::core::MoveItErrorCode::SUCCESS);
+    return success;
+}
 
 void DualUrRobotiqRsNode::goal_response_callback(const GoalHandleGripperCommand::SharedPtr & goal_handle){
   if(!goal_handle){

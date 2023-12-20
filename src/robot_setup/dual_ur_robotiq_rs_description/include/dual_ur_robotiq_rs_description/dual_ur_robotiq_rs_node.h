@@ -26,6 +26,8 @@ public:
 
     void init();
 
+    bool go_to_ready_position();
+
     bool plan_and_execute(
         const geometry_msgs::msg::Pose & left_target_pose, 
         const geometry_msgs::msg::Pose & right_target_pose, 
@@ -34,6 +36,14 @@ public:
         const std::string & left_end_effector_link = "",
         const std::string & right_end_effector_link = "");
 
+    bool plan_single_arm(
+        bool left,
+        const geometry_msgs::msg::Pose & target_pose, 
+        const std::string & reference_frame,
+        const std::string & end_effector_link, 
+        moveit::planning_interface::MoveGroupInterface::Plan & plan
+    );
+        
     void add_collision_objects(std::vector<moveit_msgs::msg::CollisionObject> & collision_objects){
         planning_scene_interface_.addCollisionObjects(collision_objects);
     }

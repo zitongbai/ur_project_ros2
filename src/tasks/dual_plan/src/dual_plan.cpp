@@ -78,26 +78,31 @@ int main(int argc, char **argv)
             return msg;
         }();
         visual_tools.publishText(text_pose, text, rviz_visual_tools::WHITE,
-                                        rviz_visual_tools::XXLARGE);
+                                        rviz_visual_tools::XXXLARGE);
     };
     auto const prompt = [&visual_tools](auto text) {
         visual_tools.prompt(text);
     };
-    auto const draw_trajectory_tool_path =
-        [&visual_tools,
-        jmg = node->get_both_move_group()->getRobotModel()->getJointModelGroup(
-            "both_manipulators")](auto const trajectory) 
-    {
-        visual_tools.publishTrajectoryLine(trajectory, jmg);
-    };
+    // auto const draw_trajectory_tool_path =
+    //     [&visual_tools,
+    //     jmg = node->get_both_move_group()->getRobotModel()->getJointModelGroup(
+    //         "both_manipulators")](auto const trajectory) 
+    // {
+    //     visual_tools.publishTrajectoryLine(trajectory, jmg);
+    // };
 
-    draw_title("Safety Demonstration");
+    draw_title("Safety_Demonstration");
     visual_tools.trigger();
-    prompt("Press 'Next' in the RvizVisualToolsGui window to execute");
 
+    // --------------------------------------------------
+    // 0. move to home position
+    // --------------------------------------------------
+    node->go_to_ready_position();
+    
     // --------------------------------------------------
     // 1. do a path planning to show the ability.
     // --------------------------------------------------
+
     left_target_pose.position.x = 0.4;
     left_target_pose.position.y = -0.2;
     left_target_pose.position.z = 0.3;
@@ -117,15 +122,87 @@ int main(int argc, char **argv)
     right_target_pose.orientation.z = right_quat.z();
     right_target_pose.orientation.w = right_quat.w();
 
+    // draw marker that shows the target pose
+
+    prompt("Press 'Next' in the RvizVisualToolsGui window to execute");
+    visual_tools.setBaseFrame(left_planning_frame);
+    visual_tools.publishAxisLabeled(left_target_pose, "left_target_pose", rvt::LARGE);
+    visual_tools.setBaseFrame(right_planning_frame);
+    visual_tools.publishAxisLabeled(right_target_pose, "right_target_pose", rvt::LARGE);
+    visual_tools.trigger();
+    rclcpp::sleep_for(std::chrono::seconds(1));
+
     node->plan_and_execute(left_target_pose, right_target_pose, 
         left_planning_frame, right_planning_frame, 
         left_ee_link, right_ee_link);
 
+    visual_tools.deleteAllMarkers();
+    visual_tools.setBaseFrame("world");
+    draw_title("Trajectory_successfully_executed");
+    visual_tools.trigger();
     // --------------------------------------------------
     // 2. try to make a plan that two arms would colliside
     //  display the capability of safety.
     // --------------------------------------------------
 
+    left_target_pose.position.x = 0.4;
+    left_target_pose.position.y = -0.6;
+    left_target_pose.position.z = 0.3;
+    right_target_pose.position.x = 0.4;
+    right_target_pose.position.y = 0.6;
+    right_target_pose.position.z = 0.3;
+
+    prompt("Press 'Next' in the RvizVisualToolsGui window to plan");
+    visual_tools.deleteAllMarkers();
+    visual_tools.setBaseFrame("world");
+    draw_title("Unsafe_target_pose");
+
+
+    auto left_joint_model_group = node->get_left_move_group()
+        ->getRobotModel()->getJointModelGroup("left_ur_manipulator");
+    auto right_joint_model_group = node->get_right_move_group()
+        ->getRobotModel()->getJointModelGroup("right_ur_manipulator");
+    moveit::planning_interface::MoveGroupInterface::Plan left_plan, right_plan;
+    bool single_success;
+    bool use_left = true;
+    bool use_right = false;
+
+    single_success = node->plan_single_arm(
+        use_left, left_target_pose, left_planning_frame, "", left_plan);
+
+    if(single_success){
+        visual_tools.setBaseFrame(left_planning_frame);
+        visual_tools.publishAxisLabeled(left_target_pose, "left_target_pose", rvt::LARGE);
+        visual_tools.setBaseFrame("world");
+        visual_tools.publishTrajectoryLine(left_plan.trajectory_, left_joint_model_group);
+    }
+    single_success = node->plan_single_arm(
+        use_right, right_target_pose, right_planning_frame, "", right_plan);
+    if(single_success){
+        visual_tools.setBaseFrame(right_planning_frame);
+        visual_tools.publishAxisLabeled(right_target_pose, "right_target_pose", rvt::LARGE);
+        visual_tools.setBaseFrame("world");
+        visual_tools.publishTrajectoryLine(right_plan.trajectory_, right_joint_model_group);
+    }
+
+    bool dual_success = node->plan_and_execute(left_target_pose, right_target_pose, 
+        left_planning_frame, right_planning_frame, 
+        "", "");
+    if(!dual_success){
+        visual_tools.setBaseFrame("world");
+        draw_title("Two_arms_would_collide");
+    }
+    visual_tools.trigger();
+
+    // --------------------------------------------------
+    // 3. go back to ready position
+    // --------------------------------------------------
+    prompt("Press 'Next' in the RvizVisualToolsGui window to plan"); 
+    visual_tools.deleteAllMarkers();
+    visual_tools.setBaseFrame("world");
+    draw_title("Back_to_safe_trajectory");
+    visual_tools.trigger();
+    node->go_to_ready_position();
 
 
     rclcpp::shutdown();
