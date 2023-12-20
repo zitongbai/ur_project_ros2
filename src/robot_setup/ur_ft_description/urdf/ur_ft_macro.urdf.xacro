@@ -146,6 +146,15 @@
       </inertial>
     </link>
 
+    <link name="${tf_prefix}tip_link_end">
+    </link>
+
+    <joint name="${tf_prefix}tip_link_end_joint" type="fixed">
+      <origin xyz="0 0 ${cylinder_length}" rpy="0 0 0" />
+      <parent link="${tf_prefix}tip_link" />
+      <child link="${tf_prefix}tip_link_end" />
+    </joint>
+
     <xacro:if value="${sim_gazebo}">
         <gazebo reference="${tf_prefix}ft300_sensor_joint">
           <disableFixedJointLumping>true</disableFixedJointLumping>

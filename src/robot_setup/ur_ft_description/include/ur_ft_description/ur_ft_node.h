@@ -56,12 +56,22 @@ public:
      * @return true 
      * @return false 
      */
-    bool plan_and_execute(const geometry_msgs::msg::Pose & target_pose);
+    bool plan_and_execute(const geometry_msgs::msg::Pose & target_pose, 
+                        const std::string & reference_frame = "base_link", 
+                        const std::string & end_effector_link = "tip_link_end");
+
+    bool plan_and_execute_cartesian(const geometry_msgs::msg::Pose & target_pose, 
+                        const std::string & reference_frame = "base_link", 
+                        const std::string & end_effector_link = "tip_link_end");
     
     void add_collision_objects(std::vector<moveit_msgs::msg::CollisionObject> & collision_objects);
 
     moveit::planning_interface::MoveGroupInterfacePtr & get_move_group(){
         return move_group_;
+    }
+
+    geometry_msgs::msg::Wrench & get_current_wrench(){
+        return current_wrench_;
     }
 
 private:

@@ -162,10 +162,10 @@ def generate_launch_description():
         ]
     )
 
-    # robot_description_planning_cartesian_limits = PathJoinSubstitution([
-    #         FindPackageShare(description_package), "moveit2", "cartesian_limits.yaml",
-    #     ]
-    # )
+    robot_description_planning_cartesian_limits = PathJoinSubstitution([
+            FindPackageShare(description_package), "moveit2", "cartesian_limits.yaml",
+        ]
+    )
 
     move_group_capabilities = {
         "capabilities": """pilz_industrial_motion_planner/MoveGroupSequenceAction \
@@ -216,7 +216,7 @@ def generate_launch_description():
             robot_description,
             robot_description_semantic,
             robot_description_kinematics,
-            # robot_description_planning_cartesian_limits,
+            robot_description_planning_cartesian_limits,
             robot_description_planning_joint_limits,
             planning_pipelines_config,
             ompl_planning_config,
@@ -237,7 +237,7 @@ def generate_launch_description():
         parameters=[
             robot_description,
             robot_description_semantic,
-            # robot_description_planning_cartesian_limits,
+            robot_description_planning_cartesian_limits,
             robot_description_planning_joint_limits,
             robot_description_kinematics,
             planning_pipelines_config,

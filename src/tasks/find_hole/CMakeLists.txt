@@ -10,6 +10,30 @@ find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(moveit_common REQUIRED)
+find_package(moveit_core REQUIRED)
+find_package(moveit_ros_planning_interface REQUIRED)
+find_package(moveit_ros_planning REQUIRED)
+find_package(moveit_visual_tools REQUIRED)
+find_package(rclcpp_components REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(control_msgs REQUIRED)
+find_package(ur_ft_description REQUIRED)
+
+add_executable(find_hole src/find_hole.cpp)
+target_include_directories(find_hole PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+ament_target_dependencies(find_hole
+  rclcpp tf2 
+  moveit_core moveit_ros_planning control_msgs
+  ur_ft_description
+)
+
+install(TARGETS find_hole
+  DESTINATION lib/${PROJECT_NAME})
+
 
 install(
   DIRECTORY 

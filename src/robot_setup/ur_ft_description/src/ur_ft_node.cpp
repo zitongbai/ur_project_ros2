@@ -6,7 +6,7 @@ UrFTNode::UrFTNode(const std::string & node_name, const rclcpp::NodeOptions &opt
 
     // wrench subscription
     wrench_sub_ = this->create_subscription<geometry_msgs::msg::Wrench>(
-        wrench_topic_name_, 10, std::bind(UrFTNode::wrench_topic_callback, this, std::placeholders::_1)
+        wrench_topic_name_, 10, std::bind(&UrFTNode::wrench_topic_callback, this, std::placeholders::_1)
     );
 }
 
@@ -17,8 +17,8 @@ void UrFTNode::init(){
 
     // move_group_->setPlanningTime(5.0);
     // move_group_->setNumPlanningAttempts(5);
-    // move_group_->setMaxVelocityScalingFactor(0.5);
-    // move_group_->setMaxAccelerationScalingFactor(0.5);
+    move_group_->setMaxVelocityScalingFactor(0.5);
+    move_group_->setMaxAccelerationScalingFactor(0.5);
     // move_group_->setGoalTolerance(0.01);
     // move_group_->setGoalJointTolerance(0.01);
     // move_group_->setGoalOrientationTolerance(0.01);
@@ -45,8 +45,23 @@ void UrFTNode::cartesian_target_2_joint_target(
 }
 
 
-bool UrFTNode::plan_and_execute(const geometry_msgs::msg::Pose & target_pose){
-    cartesian_target_2_joint_target(target_pose, "base_link");
+bool UrFTNode::plan_and_execute(const geometry_msgs::msg::Pose & target_pose, 
+        const std::string & reference_frame, 
+        const std::string & end_effector_link){
+    move_group_->setPlanningPipelineId("ompl"); // refer to the planning_pipeline_config.yaml
+    move_group_->setPlannerId("RRTConnectkConfigDefault");
+    move_group_->setMaxVelocityScalingFactor(0.03);
+    move_group_->setMaxAccelerationScalingFactor(0.03);
+    
+    auto const target_pose_stamped = [&target_pose, &reference_frame]{
+        geometry_msgs::msg::PoseStamped msg;
+        msg.header.frame_id = reference_frame;
+        msg.pose = target_pose;
+        return msg;
+    }();
+
+    move_group_->setStartStateToCurrentState();
+    move_group_->setJointValueTarget(target_pose_stamped, end_effector_link);
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     bool success = (move_group_->plan(my_plan) == moveit::core::MoveItErrorCode::SUCCESS);
     if(success){
@@ -56,6 +71,34 @@ bool UrFTNode::plan_and_execute(const geometry_msgs::msg::Pose & target_pose){
     return success;
 }
 
+bool UrFTNode::plan_and_execute_cartesian(const geometry_msgs::msg::Pose & target_pose, 
+        const std::string & reference_frame, 
+        const std::string & end_effector_link){
+    move_group_->setPlanningPipelineId("pilz");
+    move_group_->setPlannerId("PTP");
+    move_group_->setMaxVelocityScalingFactor(0.01);
+    move_group_->setMaxAccelerationScalingFactor(0.01);
+
+    auto const target_pose_stamped = [&target_pose, &reference_frame]{
+        geometry_msgs::msg::PoseStamped msg;
+        msg.header.frame_id = reference_frame;
+        msg.pose = target_pose;
+        return msg;
+    }();
+    
+    move_group_->setStartStateToCurrentState();
+    move_group_->setPoseTarget(target_pose_stamped, end_effector_link);
+    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+    bool success = (move_group_->plan(my_plan) == moveit::core::MoveItErrorCode::SUCCESS);
+    if(success){
+        move_group_->execute(my_plan);
+        RCLCPP_INFO(this->get_logger(), "Plan and execute successfully");
+    }
+    return success;
+}
+
+
 void UrFTNode::add_collision_objects(std::vector<moveit_msgs::msg::CollisionObject> & collision_objects){
     planning_scene_interface_.addCollisionObjects(collision_objects);
 }
+
