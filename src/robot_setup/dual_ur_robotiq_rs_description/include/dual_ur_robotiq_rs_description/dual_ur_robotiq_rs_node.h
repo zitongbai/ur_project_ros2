@@ -35,7 +35,7 @@ public:
         const std::string & right_end_effector_link = "");
 
     void add_collision_objects(std::vector<moveit_msgs::msg::CollisionObject> & collision_objects){
-        planning_scene_interface_->addCollisionObjects(collision_objects);
+        planning_scene_interface_.addCollisionObjects(collision_objects);
     }
 
     // Helper functions
@@ -90,7 +90,7 @@ private:
     moveit::planning_interface::MoveGroupInterfacePtr both_move_group_;
     moveit::planning_interface::MoveGroupInterfacePtr left_move_group_;
     moveit::planning_interface::MoveGroupInterfacePtr right_move_group_;
-    moveit::planning_interface::PlanningSceneInterfacePtr planning_scene_interface_;
+    moveit::planning_interface::PlanningSceneInterface planning_scene_interface_;
 
     std::vector<double> left_target_joint_;
     std::vector<double> right_target_joint_;

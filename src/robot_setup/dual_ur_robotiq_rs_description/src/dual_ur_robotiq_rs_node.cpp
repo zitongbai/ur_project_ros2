@@ -35,7 +35,11 @@ void DualUrRobotiqRsNode::init(){
     right_move_group_ =
         std::make_shared<moveit::planning_interface::MoveGroupInterface>(
             shared_from_this(), right_planning_group_name_);
-    
+
+    // for fast demo
+    both_move_group_->setMaxAccelerationScalingFactor(0.3);
+    both_move_group_->setMaxVelocityScalingFactor(0.3);
+
     both_move_group_->setPlanningPipelineId("ompl"); // refer to the planning_pipeline_config.yaml
     both_move_group_->setPlannerId("RRTConnectkConfigDefault");
     left_move_group_->setPlanningPipelineId("ompl"); // refer to the planning_pipeline_config.yaml
@@ -43,12 +47,12 @@ void DualUrRobotiqRsNode::init(){
     right_move_group_->setPlanningPipelineId("ompl"); // refer to the planning_pipeline_config.yaml
     right_move_group_->setPlannerId("RRTConnectkConfigDefault");
 
-    left_move_group_->setStartStateToCurrentState();
-    left_move_group_->setNamedTarget("left_ready");
-    left_move_group_->move();
-    right_move_group_->setStartStateToCurrentState();
-    right_move_group_->setNamedTarget("right_ready");
-    right_move_group_->move();
+    // left_move_group_->setStartStateToCurrentState();
+    // left_move_group_->setNamedTarget("left_ready");
+    // left_move_group_->move();
+    // right_move_group_->setStartStateToCurrentState();
+    // right_move_group_->setNamedTarget("right_ready");
+    // right_move_group_->move();
 }
 
 
@@ -78,12 +82,12 @@ bool DualUrRobotiqRsNode::plan_and_execute(
     both_target_joint_.clear();
 
     left_move_group_->setStartStateToCurrentState();
-    left_move_group_->setPoseTarget(left_target_pose_stamped, left_end_effector_link);
+    left_move_group_->setJointValueTarget(left_target_pose_stamped, left_end_effector_link);
     left_move_group_->getJointValueTarget(left_target_joint_); // use ik to get joint target from target pose
     right_move_group_->setStartStateToCurrentState();
-    right_move_group_->setPoseTarget(right_target_pose_stamped, right_end_effector_link);
+    right_move_group_->setJointValueTarget(right_target_pose_stamped, right_end_effector_link);
     right_move_group_->getJointValueTarget(right_target_joint_); // use ik to get joint target from target pose
-    
+
     // combine both target joint
     both_target_joint_.insert(both_target_joint_.end(), left_target_joint_.begin(), left_target_joint_.end());
     both_target_joint_.insert(both_target_joint_.end(), right_target_joint_.begin(), right_target_joint_.end());

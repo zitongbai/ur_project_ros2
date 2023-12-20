@@ -1,6 +1,8 @@
-shoulder_pan_joint: 0.0
+# you can use `ros2 launch ur_robotiq_rs_description view_ur_robotiq_rs.launch.py`
+# to help you find the desired joint angles
+shoulder_pan_joint: 3.14
 shoulder_lift_joint: -1.57
-elbow_joint: 1.57
+elbow_joint: -1.57
 wrist_1_joint: -1.57
-wrist_2_joint: -1.57
+wrist_2_joint: 1.57
 wrist_3_joint: 0.0
