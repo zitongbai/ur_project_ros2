@@ -306,7 +306,7 @@
   </link>
   <!-- base_joint fixes base_link to the environment -->
   <joint name="base_joint" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0.5 1.03"/>
+    <origin rpy="0.0 0.0 1.5707" xyz="0.0 0.0 1.0"/>
     <parent link="world"/>
     <child link="base_link"/>
   </joint>
@@ -760,28 +760,13 @@
     <parent link="robotiq_85_base_link"/>
     <child link="dummy_child5"/>
   </joint>
-  <gazebo>
-    <!-- grasp fix plugin for gazebo classic -->
-    <plugin filename="libgazebo_grasp_fix.so" name="gazebo_grasp_fix">
-      <arm>
-        <arm_name>robotiq_85_gripper_arm</arm_name>
-        <palm_link>wrist_3_link</palm_link>
-        <gripper_link>robotiq_85_left_finger_tip_link</gripper_link>
-        <gripper_link>robotiq_85_right_finger_tip_link</gripper_link>
-        <gripper_link>robotiq_85_left_knuckle_link</gripper_link>
-        <gripper_link>robotiq_85_right_knuckle_link</gripper_link>
-        <gripper_link>robotiq_85_left_inner_knuckle_link</gripper_link>
-        <gripper_link>robotiq_85_right_inner_knuckle_link</gripper_link>
-      </arm>
-      <forces_angle_tolerance>150</forces_angle_tolerance>
-      <update_rate>30</update_rate>
-      <grip_count_threshold>1</grip_count_threshold>
-      <max_grip_count>2</max_grip_count>
-      <release_tolerance>0.01</release_tolerance>
-      <disable_collisions_on_attach>false</disable_collisions_on_attach>
-      <contact_topic>__default_topic__</contact_topic>
-    </plugin>
-  </gazebo>
+  <!-- grasp point for planning -->
+  <link name="grasp_point"/>
+  <joint name="grasp_point_joint" type="fixed">
+    <parent link="tool0"/>
+    <child link="grasp_point"/>
+    <origin rpy="0 0 0" xyz="0 0 0.15"/>
+  </joint>
   <!-- camera body, with origin at bottom screw mount -->
   <joint name="camera_joint" type="fixed">
     <origin rpy="0 -1.5707 1.5707" xyz="0 -0.1 0"/>
@@ -1000,6 +985,28 @@
   <gazebo>
     <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
       <parameters>/home/xiaobaige/ur_project_ros2/install/ur_robotiq_rs_description/share/ur_robotiq_rs_description/config/controllers.yaml</parameters>
+    </plugin>
+  </gazebo>
+  <gazebo>
+    <!-- grasp fix plugin for gazebo classic -->
+    <plugin filename="libgazebo_grasp_fix.so" name="gazebo_grasp_fix">
+      <arm>
+        <arm_name>robotiq_85_gripper_arm</arm_name>
+        <palm_link>wrist_3_link</palm_link>
+        <gripper_link>robotiq_85_left_finger_tip_link</gripper_link>
+        <gripper_link>robotiq_85_right_finger_tip_link</gripper_link>
+        <gripper_link>robotiq_85_left_knuckle_link</gripper_link>
+        <gripper_link>robotiq_85_right_knuckle_link</gripper_link>
+        <gripper_link>robotiq_85_left_inner_knuckle_link</gripper_link>
+        <gripper_link>robotiq_85_right_inner_knuckle_link</gripper_link>
+      </arm>
+      <forces_angle_tolerance>150</forces_angle_tolerance>
+      <update_rate>30</update_rate>
+      <grip_count_threshold>1</grip_count_threshold>
+      <max_grip_count>2</max_grip_count>
+      <release_tolerance>0.01</release_tolerance>
+      <disable_collisions_on_attach>false</disable_collisions_on_attach>
+      <contact_topic>__default_topic__</contact_topic>
     </plugin>
   </gazebo>
 </robot>

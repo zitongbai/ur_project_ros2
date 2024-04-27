@@ -168,7 +168,10 @@ def generate_launch_description():
     # Get URDF/XACRO file path
     robot_description_content = Command(
         [
-            PathJoinSubstitution([FindExecutable(name='xacro')]),
+            # PathJoinSubstitution([FindExecutable(name='xacro')]),
+            'python3',
+            ' ',
+            PathJoinSubstitution([FindPackageShare(description_package), 'launch', 'remove_comments.py']),
             ' ',
             PathJoinSubstitution(
                 [FindPackageShare(description_package), 'urdf', description_file]

@@ -300,7 +300,7 @@
   </link>
   <!-- base_joint fixes base_link to the environment -->
   <joint name="base_joint" type="fixed">
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 1.0"/>
+    <origin rpy="0.0 0.0 -1.5707" xyz="0.0 0.0 1.0"/>
     <parent link="world"/>
     <child link="base_link"/>
   </joint>
@@ -503,6 +503,13 @@
       <inertia ixx="0.00035625" ixy="0.0" ixz="0.0" iyy="0.00035625" iyz="0.0" izz="0.0001125"/>
     </inertial>
   </link>
+  <link name="tip_link_end">
+    </link>
+  <joint name="tip_link_end_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0.06"/>
+    <parent link="tip_link"/>
+    <child link="tip_link_end"/>
+  </joint>
   <gazebo reference="ft300_sensor_joint">
     <disableFixedJointLumping>true</disableFixedJointLumping>
     <provideFeedback>true</provideFeedback>

@@ -17,7 +17,7 @@
 
     <link name="world"/>
 
-    <!-- robot: ur_ft -->
+    <!-- robot ur_ft -->
     <xacro:ur_ft 
         ur_name="ur"
         ur_type="$(arg ur_type)" 

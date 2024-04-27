@@ -306,7 +306,7 @@
   </link>
   <!-- base_joint fixes base_link to the environment -->
   <joint name="left_base_joint" type="fixed">
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.5 1.0"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.5 1.02"/>
     <parent link="world"/>
     <child link="left_base_link"/>
   </joint>
@@ -760,6 +760,13 @@
     <parent link="left_robotiq_85_base_link"/>
     <child link="left_dummy_child5"/>
   </joint>
+  <!-- grasp point for planning -->
+  <link name="left_grasp_point"/>
+  <joint name="left_grasp_point_joint" type="fixed">
+    <parent link="left_tool0"/>
+    <child link="left_grasp_point"/>
+    <origin rpy="0 0 0" xyz="0 0 0.15"/>
+  </joint>
   <!-- camera body, with origin at bottom screw mount -->
   <joint name="left_camera_joint" type="fixed">
     <origin rpy="0 -1.5707 1.5707" xyz="0 -0.1 0"/>
@@ -777,7 +784,7 @@
       <!-- the mesh origin is at front plate in between the two infrared camera axes -->
       <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0.0043 -0.0175 0"/>
       <geometry>
-        <mesh filename="file:///home/xiaobaige/ros2_ws/install/realsense2_description/share/realsense2_description/meshes/d435.dae"/>
+        <mesh filename="file:///opt/ros/humble/share/realsense2_description/meshes/d435.dae"/>
       </geometry>
     </visual>
     <collision>
@@ -1267,7 +1274,7 @@
   </link>
   <!-- base_joint fixes base_link to the environment -->
   <joint name="right_base_joint" type="fixed">
-    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.5 1.0"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.5 1.02"/>
     <parent link="world"/>
     <child link="right_base_link"/>
   </joint>
@@ -1721,6 +1728,13 @@
     <parent link="right_robotiq_85_base_link"/>
     <child link="right_dummy_child5"/>
   </joint>
+  <!-- grasp point for planning -->
+  <link name="right_grasp_point"/>
+  <joint name="right_grasp_point_joint" type="fixed">
+    <parent link="right_tool0"/>
+    <child link="right_grasp_point"/>
+    <origin rpy="0 0 0" xyz="0 0 0.15"/>
+  </joint>
   <!-- camera body, with origin at bottom screw mount -->
   <joint name="right_camera_joint" type="fixed">
     <origin rpy="0 -1.5707 1.5707" xyz="0 -0.1 0"/>
@@ -1738,7 +1752,7 @@
       <!-- the mesh origin is at front plate in between the two infrared camera axes -->
       <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0.0043 -0.0175 0"/>
       <geometry>
-        <mesh filename="file:///home/xiaobaige/ros2_ws/install/realsense2_description/share/realsense2_description/meshes/d435.dae"/>
+        <mesh filename="file:///opt/ros/humble/share/realsense2_description/meshes/d435.dae"/>
       </geometry>
     </visual>
     <collision>
