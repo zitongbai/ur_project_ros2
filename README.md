@@ -1,9 +1,12 @@
-# THIS REPO IS STILL UNDER DEVEL AND UNSTABLE
-# 项目仍在开发中，不保证稳定性
 # ur_project_ros2
 The application of ur robots, robotiq gripper, realsense camera, etc. 
 
 To find more infomation (installation, usage), visit [wiki](https://github.com/zitongbai/ur_project_ros2/wiki)
+
+> ⚠️ **Notice:** This repository is no longer actively maintained.  
+> While you are welcome to explore and use the code, please note that updates and issue responses may be infrequent.  
+> Thank you for your interest and understanding.
+
 
 # Structure
 
